@@ -90,7 +90,7 @@ namespace OpenSRSLib
         }
 
         public static IEnumerable<Connection> GetConnectionInfo(){
-            using (var jsonFileReader = File.OpenText("OpenSRSLib/connection.json"))
+            using (var jsonFileReader = File.OpenText("OpenSRSLib/AccountInformation/connection.json"))
             {
                 return JsonSerializer.Deserialize<Connection[]>(jsonFileReader.ReadToEnd(),
                 new JsonSerializerOptions
