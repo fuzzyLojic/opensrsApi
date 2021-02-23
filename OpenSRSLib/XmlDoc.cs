@@ -1,31 +1,51 @@
 using System.Xml.Linq;              // to create XDocument
+using System.Linq;
 using System.IO;                    // to convert XDocument to API usable string using StringWriter
+using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
     public class XmlDoc
     {
         private string action;
-        private string domain;
+        private XDocument baseDoc;
 
-        public XmlDoc(string action, string domain){
+        public string XDocString
+        {
+            get
+            {
+                return xDocToString(baseDoc);
+            }
+        }
+
+        public XmlDoc(string action){
             this.action = action;
-            this.domain = domain;
+            baseDoc = XmlDocument();
         }
 
-        public XElement Domain {
-            get {
-                return new XElement("item",
-                    new XAttribute("key", "domain"),
-                    $"{domain}"
+        public void AddTopLevelItem(string key, string value){
+            XElement topDt = baseDoc.Descendants("dt_assoc").First();
+            XElement newItem = new XElement("item",
+                new XAttribute("key", $"{key}"),
+                value
+            );
+            topDt.Add(newItem);
+        }
+
+        public void AddItemList(string parentKey, string containerName, Dictionary<string, string> list){
+            XElement topElement = baseDoc.Descendants("item").First(x => x.Attribute("key").Value == parentKey);
+            XElement dt = new XElement(containerName);
+
+            foreach (var item in list)
+            {
+                XElement newAttribute = new XElement("item",
+                    new XAttribute("key", $"{item.Key}"),
+                    $"{item.Value}"
                 );
+                dt.Add(newAttribute);
             }
-        }
 
-        public string XDocString { 
-            get {
-                return xDocToString(XmlDocument());
-            }
+            topElement.Add(dt);
         }
 
 
@@ -50,14 +70,8 @@ namespace OpenSRSLib
                                         new XAttribute("key", "object"),
                                         "DOMAIN"),              // of a domain
                                     new XElement("item",
-                                        new XAttribute("key", "attributes"),
-                                        new XElement("dt_assoc",
-                                            // new XElement("item",
-                                            //     new XAttribute("key", "domain"),
-                                            //     $"{domain}" // domain being looked up
-                                            // )
-                                            this.Domain
-                                        )
+                                        new XAttribute("key", "attributes")                                            
+                                        
                                     )
                                 )
                             )
@@ -78,25 +92,3 @@ namespace OpenSRSLib
         }
     }
 }
-
-//             string xml = @"<?xml version ='1.0' encoding='UTF-8' standalone='no'?>
-// <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
-// <OPS_envelope>
-// <header>      
-//     <version>0.9</version>
-// </header>
-// <body>
-// <data_block>      
-//     <dt_assoc>      
-//         <item key=""protocol"">XCP</item>       
-//         <item key=""action"">LOOKUP</item>        
-//         <item key=""object"">DOMAIN</item>         
-//         <item key=""attributes"">          
-//             <dt_assoc>          
-//                 <item key=""domain"">weomedia.com</item>           
-//             </dt_assoc>           
-//         </item>           
-//     </dt_assoc>
-// </data_block>
-// </body>
-// </OPS_envelope>";

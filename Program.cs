@@ -7,9 +7,9 @@ namespace opensrsApi
     class Program
     {
         static void Main(string[] args)
-        {   
-            // Lookup Domain   
-            Lookup req = new Lookup("weomedia.com");
+        {
+            // Lookup Availabilty Of Domain   
+            LookupAvailabilty req = new LookupAvailabilty("domain.com");
             Task.Run((Func<Task>)(() => req.Post()));
             Console.Read();
 

@@ -13,7 +13,7 @@ namespace OpenSRSLib
 {
     public class Request
     {
-        protected static bool isInTestMode = true;
+        public static bool isInTestMode = true;
 
         protected static Connection connectionDetails = GetConnectionDetails();
 
@@ -51,7 +51,7 @@ namespace OpenSRSLib
 
 
         public async Task Post()
-        {        Console.WriteLine("xml:\n" + this.Xml);
+        {        
             try
             {
                 HttpClient client = new HttpClient();
@@ -75,7 +75,7 @@ namespace OpenSRSLib
             }
         }
 
-
+        // get reseller username, api host port, and api key from connection.json
         public static Connection GetConnectionDetails()
         {
             var connectionOptions = GetConnectionInfo();  
