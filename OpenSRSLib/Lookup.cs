@@ -3,33 +3,37 @@ using System.Collections.Generic;
 // Determines the availablity of a domain
 namespace OpenSRSLib
 {
-    public class LookupAvailabilty : Request
+    public class Lookup : Request
     {
         private string domain;
         private short nocache;
 
-        protected override string Xml{
-            get{
-                XmlDoc doc = new XmlDoc("LOOKUP");
-                Dictionary<string, string> attributes = new Dictionary<string, string>()
-                {
-                    {"domain", domain},
-                    {"no_cache", nocache.ToString()}
-                };
-                doc.AddItemList("attributes", "dt_assoc", attributes);
-                
-                return doc.XDocString;
-            }
-        }
-
-        public LookupAvailabilty(string domain, short nocache = 0){
+        // Lookup Contructor
+        // takes string "domain" - domain name to be seached for availability
+        // optional nocache - 0 = looks in OpenSRS cached results, 1 = looks to applicable registry
+        public Lookup(string domain, short nocache = 0){
             this.domain = domain;
             this.nocache = nocache;
+            xml = BuildXML();
+        }
+
+        // BuildXML: builds XML request for Lookup
+        protected override string BuildXML(){
+            XmlDoc doc = new XmlDoc("lookup");
+            Dictionary<string, string> attributes = new Dictionary<string, string>()
+            {
+                {"domain", domain},
+                {"no_cache", nocache.ToString()}
+            };
+
+            doc.AddItemList("attributes", "dt_assoc", attributes);
+            
+            return doc.XDocString;
         }
     }
 }
 
-// Example:
+// Example of complete LOOKUP xml request:
 // <?xml version ='1.0' encoding='UTF-8' standalone='no'?>
 // <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
 // <OPS_envelope>

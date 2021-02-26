@@ -17,21 +17,19 @@ namespace OpenSRSLib
 
         protected static Connection connectionDetails = GetConnectionDetails();
 
-        protected static string xml;
+        protected string xml;
         // XML document is assemebled differently depending on type of request
-        // Override this property in request objects to return their completed
+        // Override this function in request objects to return their completed
         //      xml request document
-        protected virtual string Xml {
-            get {
-                return xml;
-            }
-        }        
+        protected virtual string BuildXML(){
+            return xml;
+        }          
 
         protected static string signature;
         // OpenSRS API IS CASE SENSITIVE FOR THE HASH AUTHENTICATION!!
         protected string Signature {
             get {
-                signature = MD5Hash(MD5Hash(this.Xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
+                signature = MD5Hash(MD5Hash(this.xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
                 return signature;
             }
         }
@@ -55,11 +53,11 @@ namespace OpenSRSLib
             try
             {
                 HttpClient client = new HttpClient();
-                StringContent content = new StringContent(this.Xml);
+                StringContent content = new StringContent(this.xml);
                 content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml");
                 content.Headers.Add("X-Username", connectionDetails.ResellerUsername);
                 content.Headers.Add("X-Signature", this.Signature);
-                content.Headers.ContentLength = this.Xml.Length;
+                content.Headers.ContentLength = this.xml.Length;
 
                 var response = await client.PostAsync(connectionDetails.ApiHostPort, content);
                 string results = await response.Content.ReadAsStringAsync();
@@ -76,7 +74,7 @@ namespace OpenSRSLib
         }
 
         // get reseller username, api host port, and api key from connection.json
-        public static Connection GetConnectionDetails()
+        protected static Connection GetConnectionDetails()
         {
             var connectionOptions = GetConnectionInfo();  
             if (isInTestMode)
@@ -89,7 +87,7 @@ namespace OpenSRSLib
             }
         }
 
-        public static IEnumerable<Connection> GetConnectionInfo(){
+        protected static IEnumerable<Connection> GetConnectionInfo(){
             using (var jsonFileReader = File.OpenText("OpenSRSLib/AccountInformation/connection.json"))
             {
                 return JsonSerializer.Deserialize<Connection[]>(jsonFileReader.ReadToEnd(),
@@ -98,6 +96,11 @@ namespace OpenSRSLib
                     PropertyNameCaseInsensitive = true
                 });
             }
+        }
+
+        public static void ErrorHandling(string error){
+            Console.WriteLine(error);
+            return;
         }
     }
 }

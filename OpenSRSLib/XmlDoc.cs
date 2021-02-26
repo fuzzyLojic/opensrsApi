@@ -18,10 +18,14 @@ namespace OpenSRSLib
             }
         }
 
+        // XMLDoc Constructor
+        // takes string "action" (ie. LOOKUP, REGISTER, etc)
+        // assembles base of xml request object
         public XmlDoc(string action){
             this.action = action;
             baseDoc = XmlDocument();
         }
+
 
         public void AddTopLevelItem(string key, string value){
             XElement topDt = baseDoc.Descendants("dt_assoc").First();
@@ -49,7 +53,7 @@ namespace OpenSRSLib
         }
 
 
-        public XDocument XmlDocument(){
+        private XDocument XmlDocument(){
             return new XDocument(
                     new XDeclaration("1.0", "UTF-8", "no"),
                     new XDocumentType("OPS_envelope", null, "ops.dtd", null),
@@ -82,7 +86,7 @@ namespace OpenSRSLib
 
         // this function is needed because the ToString() method used directly on the
         // xDocument strips the XDeclaration
-        public static string xDocToString(XDocument xDoc)
+        private static string xDocToString(XDocument xDoc)
         {
             // Utf8StringWriter overrides utf-16 default encoding of StringWriter
             // This also ensures that the XDeclaration reads 'encoding="utf-8"'
