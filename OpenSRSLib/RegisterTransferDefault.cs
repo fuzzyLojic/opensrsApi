@@ -3,11 +3,12 @@ using System.Collections.Generic;
 namespace OpenSRSLib
 {
     // "reg_type" = new
-    public class RegisterNewDefault : Register
+    public class RegisterTransferDefault : Register
     {
-        public RegisterNewDefault(string domain, short period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
+        public RegisterTransferDefault(string domain, string authInfo, short period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;
+            this.authInfo = authInfo;
             this.period = period;
             this.owner = owner;
             this.nameserverList = nameserverList;
@@ -23,7 +24,8 @@ namespace OpenSRSLib
             Dictionary<string, string> attributes = new Dictionary<string, string>()
             {
                 {"domain", domain},
-                {"reg_type", "new"},
+                {"reg_type", "transfer"},
+                {"auth_info", authInfo},
                 {"reg_username", userInfo.Username},
                 {"reg_password", userInfo.Password},
                 {"period", period.ToString()},

@@ -18,8 +18,15 @@ namespace OpenSRSLib
         protected static Connection connectionDetails = GetConnectionDetails();
 
         protected string xml;
+
+        public string XML { 
+            get{ 
+                return xml;
+            }
+        }
+
         // XML document is assemebled differently depending on type of request
-        // Override this function in request objects to return their completed
+        // Override this function in request object decendants to return their completed
         //      xml request document
         protected virtual string BuildXML(){
             return xml;
@@ -98,9 +105,9 @@ namespace OpenSRSLib
             }
         }
 
-        public static void ErrorHandling(string error){
+        public static void ErrorHandling(string error, short errorCode){
             Console.WriteLine(error);
-            return;
+            System.Environment.Exit(errorCode);
         }
     }
 }
