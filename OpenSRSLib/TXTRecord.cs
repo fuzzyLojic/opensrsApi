@@ -2,13 +2,11 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class AAAARecord : DnsRecord
+    public class TXTRecord : DnsRecord
     {
-        public AAAARecord(string ipAddress, string subdomain = ""){
-            ValidateIP(ipAddress);
-
+        public TXTRecord(string text, string subdomain = ""){
             record = new Dictionary<string, string>(){
-                {"ipv6_address", ipAddress},
+                {"text", text},
                 {"subdomain", subdomain}
             };
         }

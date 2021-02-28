@@ -15,7 +15,7 @@ namespace OpenSRSLib
         protected ContactSet tech;
         // protected short customTechContact;    // required 0 = use reseller tech contact, 1 = use tech contact provided
         protected string handle = "process";     // required "save" - pend order for later, "process" proceed with order immediately
-        protected short period = 1;          // required for new domain reg.: 1-10
+        protected ushort period = 1;          // required for new domain reg.: 1-10
         protected static User userInfo = GetUserDetails();
         // protected string regUsername;     // required
         // protected string regPassword;     // required
@@ -25,17 +25,17 @@ namespace OpenSRSLib
 
         protected string affiliateId;     // optional
         protected string authInfo;        // optional
-        protected short autoRenew = 1;    // optional 0 = do not auto-renew, 1 = do auto-renew
-        protected short changeContact;    // optional
+        protected ushort autoRenew = 1;    // optional 0 = do not auto-renew, 1 = do auto-renew
+        protected ushort changeContact;    // optional
         protected string comments;        // optional
-        protected short customTransferNameservers;    // optional        
+        protected ushort customTransferNameservers;    // optional        
         protected string dnsTemplate;     // optional
         protected string encodingType;    // optional
-        protected short fLockDomain = 1;      // optional 0 = do not lock, 1 = do lock
+        protected ushort fLockDomain = 1;      // optional 0 = do not lock, 1 = do lock
         protected char fParkp;            // optional Y or N
         protected string fWhoisPrivacy;   // optional
         protected string legalType;       // conditional requirement for .ca
-        protected short linkDomains;      // optional
+        protected ushort linkDomains;      // optional
         protected string masterOrderId;   // conditional requirement
         protected string premiumPriceToVerify; // optional
         protected string regDomain;       // optional

@@ -5,7 +5,7 @@ namespace OpenSRSLib
     // "reg_type" = new
     public class RegisterNewDefault : Register
     {
-        public RegisterNewDefault(string domain, short period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
+        public RegisterNewDefault(string domain, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;
             this.period = period;

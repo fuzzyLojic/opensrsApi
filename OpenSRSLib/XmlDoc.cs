@@ -26,7 +26,8 @@ namespace OpenSRSLib
             baseDoc = XmlDocument();
         }
 
-
+        // Adds an Element to the top level <data_block><dt_assoc></></>
+        // of the form <item key="keyName">value</item>
         public void AddTopLevelItem(string key, string value){
             XElement topDt = baseDoc.Descendants("dt_assoc").First();
             XElement newItem = new XElement("item",
@@ -36,8 +37,28 @@ namespace OpenSRSLib
             topDt.Add(newItem);
         }
 
+        // Creates a list of Elements within the Element 
+        // <item key=parentKey>
         public void AddItemList(string parentKey, string containerName, Dictionary<string, string> list){
-            XElement topElement = baseDoc.Descendants("item").First(x => x.Attribute("key").Value == parentKey);
+            XElement parentElement = baseDoc.Descendants("item").First(x => x.Attribute("key").Value == parentKey);
+            XElement dt = CreateElementList(containerName, list);
+
+            parentElement.Add(dt);
+        }
+
+        // Creates a list of Elements within the Element 
+        // <item key=baseKey><container><item key=parentKey>
+        public void AddItemSubList(string baseKey, string parentKey, string containerName, Dictionary<string, string> list){
+            XElement baseElement = baseDoc.Descendants("item").First(x => x.Attribute("key").Value == baseKey);
+            XElement parentElement = baseElement.Descendants("item").First(x => x.Attribute("key").Value == parentKey);
+            XElement dt = CreateElementList(containerName, list);
+
+            parentElement.Add(dt);
+        }
+
+        // Creates a new Element named containerName and inserts a list of Elements
+        // of the form <item key="keyName">value</item>
+        private XElement CreateElementList(string containerName, Dictionary<string, string> list){
             XElement dt = new XElement(containerName);
 
             foreach (var item in list)
@@ -49,10 +70,10 @@ namespace OpenSRSLib
                 dt.Add(newAttribute);
             }
 
-            topElement.Add(dt);
+            return dt;
         }
 
-
+        // base document for all requests
         private XDocument XmlDocument(){
             return new XDocument(
                     new XDeclaration("1.0", "UTF-8", "no"),

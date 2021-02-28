@@ -7,9 +7,9 @@ namespace OpenSRSLib
         protected string domain;
         protected List<ARecord> aRecords;
         protected List<AAAARecord> aaaaRecords;
-        protected List<CName> cNames;
+        protected List<CNameRecord> cNames;
         protected List<MXRecord> mxRecords;
+        protected List<TXTRecord> txtRecords;
         protected List<SRVRecord> srvRecords;
-        protected List<string> txtRecords;
     }
 }

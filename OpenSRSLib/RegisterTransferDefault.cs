@@ -5,7 +5,7 @@ namespace OpenSRSLib
     // "reg_type" = new
     public class RegisterTransferDefault : Register
     {
-        public RegisterTransferDefault(string domain, string authInfo, short period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
+        public RegisterTransferDefault(string domain, string authInfo, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;
             this.authInfo = authInfo;

@@ -40,15 +40,37 @@ namespace opensrsApi
 
 
             /*** Begin Register a New Domain using Custom Nameservers ***/
-            ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
-            ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
-            List<string> ns = new List<string>() { "ns1.stabletransit.com", "ns2.stabletransit.com" };
+            // ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
+            // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
+            // List<string> ns = new List<string>() { "ns1.stabletransit.com", "ns2.stabletransit.com" };
 
-            RegisterTransferDefault newtransfer = new RegisterTransferDefault("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
+            // RegisterTransferDefault newtransfer = new RegisterTransferDefault("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
             
-            Task.Run((Func<Task>)(() => newtransfer.Post()));
-            Console.Read();
+            // Task.Run((Func<Task>)(() => newtransfer.Post()));
+            // Console.Read();
             /*** End Register a New Domain using Custom Nameservers ***/
+
+            /*** Begin Set DNS A record***/
+            // List<ARecord> aList = new List<ARecord>(){
+            //     new ARecord("123.45.6.214")
+            // };
+            // SetDns newARecord = new SetDns("hoobajab.com", aList, null, null, null, null, null);
+
+            // Console.WriteLine(newARecord.XML);
+            // Task.Run((Func<Task>)(() => newARecord.Post()));
+            // Console.Read();
+            /*** Begin Set DNS A record ***/
+
+            /*** Begin Set DNS MX record***/
+            List<MXRecord> mxList = new List<MXRecord>(){
+                new MXRecord("mx1.moop.com", 5, "www"),
+                new MXRecord("mx2.moop.com", 10, "www")
+            };
+            SetDns newMXRecord = new SetDns("hoobajab.com", null, null, null, mxList, null, null);
+
+            Task.Run((Func<Task>)(() => newMXRecord.Post()));
+            Console.Read();
+            /*** Begin Set DNS MX record ***/
         }   
     }
 }
