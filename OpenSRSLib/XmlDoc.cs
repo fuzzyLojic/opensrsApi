@@ -26,8 +26,31 @@ namespace OpenSRSLib
             baseDoc = XmlDocument();
         }
 
+        // takes Request results XML string and returns a Dictionary
+        // of key names and values
+        // ex: <item key="moop">floop</item> returns
+        // { "moop", "floop" }
+        public static Dictionary<string, string> ProcessResponse(string results){
+            ushort i = 0;
+            string value;
+            var doc = XDocument.Parse(results);
+            Dictionary<string, string> processedResults = new Dictionary<string, string>();
+            foreach (var item in doc.Descendants("item"))
+            {
+                if(processedResults.TryGetValue(item.Attribute("key").Value, out value)){
+                    processedResults.Add(item.Attribute("key").Value + i.ToString(), item.Value);
+                    i++;
+                }
+                else{
+                    processedResults.Add(item.Attribute("key").Value, item.Value);
+                }
+            }
+
+            return processedResults;
+        }
+
         // Adds an Element to the top level <data_block><dt_assoc></></>
-        // of the form <item key="keyName">value</item>
+        // of the form <item key="key">value</item>
         public void AddTopLevelItem(string key, string value){
             XElement topDt = baseDoc.Descendants("dt_assoc").First();
             XElement newItem = new XElement("item",
@@ -47,7 +70,7 @@ namespace OpenSRSLib
         }
 
         // Creates a list of Elements within the Element 
-        // <item key=baseKey><container><item key=parentKey>
+        // <item key=baseKey><some_container><item key=parentKey>
         public void AddItemSubList(string baseKey, string parentKey, string containerName, Dictionary<string, string> list){
             XElement baseElement = baseDoc.Descendants("item").First(x => x.Attribute("key").Value == baseKey);
             XElement parentElement = baseElement.Descendants("item").First(x => x.Attribute("key").Value == parentKey);

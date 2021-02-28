@@ -14,14 +14,21 @@ namespace OpenSRSLib
     public class Request
     {
         public static bool isInTestMode = true;
-
         protected static Connection connectionDetails = GetConnectionDetails();
-
         protected string xml;
 
         public string XML { 
-            get{ 
+            get
+            { 
                 return xml;
+            }
+        }
+
+
+        // OpenSRS API IS CASE SENSITIVE FOR THE HASH AUTHENTICATION!!
+        protected string Signature {
+            get {
+                return MD5Hash(MD5Hash(this.xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
             }
         }
 
@@ -30,16 +37,16 @@ namespace OpenSRSLib
         //      xml request document
         protected virtual string BuildXML(){
             return xml;
-        }          
-
-        protected static string signature;
-        // OpenSRS API IS CASE SENSITIVE FOR THE HASH AUTHENTICATION!!
-        protected string Signature {
-            get {
-                signature = MD5Hash(MD5Hash(this.xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
-                return signature;
-            }
         }
+
+        // takes Request results XML string and returns a Dictionary
+        // of key names and values
+        // ex: <item key="moop">floop</item> returns
+        // { "moop", "floop" }
+        // override to do additional processing
+        protected virtual Dictionary<string, string> ProcessedResults(string results){
+            return XmlDoc.ProcessResponse(results);
+        }          
 
 
         // perform MD5 hash on input string
@@ -55,7 +62,7 @@ namespace OpenSRSLib
         }
 
 
-        public async Task Post()
+        public async Task<Dictionary<string, string>> Post()
         {        
             try
             {
@@ -66,17 +73,16 @@ namespace OpenSRSLib
                 content.Headers.Add("X-Signature", this.Signature);
                 content.Headers.ContentLength = this.xml.Length;
 
-                var response = await client.PostAsync(connectionDetails.ApiHostPort, content);
+                HttpResponseMessage response = await client.PostAsync(connectionDetails.ApiHostPort, content);
                 string results = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine(response);
-                Console.WriteLine("results: \n" + results);
-
                 client.Dispose();
+                return ProcessedResults(results);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                ErrorHandling("Oops! Post broke...\n" + e, 0);
+                return new Dictionary<string, string>();
             }
         }
 
@@ -106,7 +112,7 @@ namespace OpenSRSLib
         }
 
         public static void ErrorHandling(string error, short errorCode){
-            Console.WriteLine(error);
+            Console.WriteLine(error + "\n\nError Code: " + errorCode);
             System.Environment.Exit(errorCode);
         }
     }

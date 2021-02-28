@@ -11,9 +11,12 @@ namespace opensrsApi
         {
 
             /*** Begin Lookup Availabilty Of Domain ***/
-            // Lookup req = new Lookup("domain.com");
-            // Task.Run((Func<Task>)(() => req.Post()));
-            // Console.Read();
+            // Lookup req = new Lookup("hoobajab.com");
+            // Task<Dictionary<string, string>> task = req.Post();
+            // foreach (var item in task.Result)
+            // {
+            //     Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            // }
             /*** End Lookup Availabilty Of Domain ***/
 
 
@@ -21,9 +24,12 @@ namespace opensrsApi
             // ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
 
-            // RegisterNewDefault newreg = new RegisterNewDefault("hoobajab1.com", 1, owner, admin, admin, admin);
-            // Task.Run((Func<Task>)(() => newreg.Post()));
-            // Console.Read();
+            // RegisterNewDefault req = new RegisterNewDefault("hoobajab1.com", 1, owner, admin, admin, admin);
+            // Task<Dictionary<string, string>> task = req.Post();
+            // foreach (var item in task.Result)
+            // {
+            //     Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            // }
             /*** End Register a New Domain using Default Nameservers ***/
 
 
@@ -32,10 +38,13 @@ namespace opensrsApi
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
             // List<string> ns = new List<string>(){"ns1.stabletransit.com", "ns2.stabletransit.com"};
 
-            // RegisterNewDefault newreg = new RegisterNewDefault("hoobajab1.com", 1, owner, admin, admin, admin, ns);
-            
-            // Task.Run((Func<Task>)(() => newreg.Post()));
-            // Console.Read();
+            // RegisterNewDefault req = new RegisterNewDefault("hoobajab1.com", 1, owner, admin, admin, admin, ns);
+
+            // Task<Dictionary<string, string>> task = req.Post();
+            // foreach (var item in task.Result)
+            // {
+            //     Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            // }
             /*** End Register a New Domain using Custom Nameservers ***/
 
 
@@ -44,21 +53,27 @@ namespace opensrsApi
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
             // List<string> ns = new List<string>() { "ns1.stabletransit.com", "ns2.stabletransit.com" };
 
-            // RegisterTransferDefault newtransfer = new RegisterTransferDefault("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
-            
-            // Task.Run((Func<Task>)(() => newtransfer.Post()));
-            // Console.Read();
+            // RegisterTransferDefault req = new RegisterTransferDefault("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
+
+            // Task<Dictionary<string, string>> task = req.Post();
+            // foreach (var item in task.Result)
+            // {
+            //     Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            // }
             /*** End Register a New Domain using Custom Nameservers ***/
 
             /*** Begin Set DNS A record***/
             // List<ARecord> aList = new List<ARecord>(){
             //     new ARecord("123.45.6.214")
             // };
-            // SetDns newARecord = new SetDns("hoobajab.com", aList, null, null, null, null, null);
+            // SetDns req = new SetDns("hoobajab.com", aList, null, null, null, null, null);
 
-            // Console.WriteLine(newARecord.XML);
-            // Task.Run((Func<Task>)(() => newARecord.Post()));
-            // Console.Read();
+            // Console.WriteLine(req.XML);
+            // Task<Dictionary<string, string>> task = req.Post();
+            // foreach (var item in task.Result)
+            // {
+            //     Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            // }
             /*** Begin Set DNS A record ***/
 
             /*** Begin Set DNS MX record***/
@@ -66,10 +81,13 @@ namespace opensrsApi
                 new MXRecord("mx1.moop.com", 5, "www"),
                 new MXRecord("mx2.moop.com", 10, "www")
             };
-            SetDns newMXRecord = new SetDns("hoobajab.com", null, null, null, mxList, null, null);
+            SetDns req = new SetDns("hoobajab.com", null, null, null, mxList, null, null);
 
-            Task.Run((Func<Task>)(() => newMXRecord.Post()));
-            Console.Read();
+            Task<Dictionary<string, string>> task = req.Post();
+            foreach (var item in task.Result)
+            {
+                Console.WriteLine("key: " + item.Key + "  value: " + item.Value);
+            }
             /*** Begin Set DNS MX record ***/
         }   
     }
