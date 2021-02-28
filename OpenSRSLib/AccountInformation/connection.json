@@ -1,0 +1,14 @@
+[  
+    {
+        "Id": "live", 
+        "ResellerUsername": "live_username",
+        "ApiKey": "live_api_key",
+        "ApiHostPort": "https://rr-n1-tor.opensrs.net:55443"
+    },
+    {
+        "Id": "test",
+        "ResellerUsername": "test_username",
+        "ApiKey": "test_api_key",
+        "ApiHostPort": "https://horizon.opensrs.net:55443"
+    }
+]
