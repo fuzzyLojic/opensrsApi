@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class SetDns : Dns
+    public class SetDnsRequest : Dns
     {
-        public SetDns(string domain, List<ARecord> aRecords, List<AAAARecord> aaaaRecords, List<CNameRecord> cNames, List<MXRecord> mxRecords, List<TXTRecord> txtRecords, List<SRVRecord> srvRecords)
+        public SetDnsRequest(string domain, List<ARecord> aRecords, List<AAAARecord> aaaaRecords, List<CNameRecord> cNames, List<MXRecord> mxRecords, List<TXTRecord> txtRecords, List<SRVRecord> srvRecords)
         {
             this.domain = domain;
             this.aRecords = aRecords;

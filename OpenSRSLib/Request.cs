@@ -112,7 +112,7 @@ namespace OpenSRSLib
         }
 
         public static void ErrorHandling(string error, short errorCode){
-            Console.WriteLine(error + "\n\nError Code: " + errorCode);
+            Console.WriteLine($"{error}\n\nError Code: {errorCode}");
             System.Environment.Exit(errorCode);
         }
     }

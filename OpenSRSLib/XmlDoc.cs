@@ -1,3 +1,4 @@
+using System;
 using System.Xml.Linq;              // to create XDocument
 using System.Linq;
 using System.IO;                    // to convert XDocument to API usable string using StringWriter
@@ -26,35 +27,12 @@ namespace OpenSRSLib
             baseDoc = XmlDocument();
         }
 
-        // takes Request results XML string and returns a Dictionary
-        // of key names and values
-        // ex: <item key="moop">floop</item> returns
-        // { "moop", "floop" }
-        public static Dictionary<string, string> ProcessResponse(string results){
-            ushort i = 0;
-            string value;
-            var doc = XDocument.Parse(results);
-            Dictionary<string, string> processedResults = new Dictionary<string, string>();
-            foreach (var item in doc.Descendants("item"))
-            {
-                if(processedResults.TryGetValue(item.Attribute("key").Value, out value)){
-                    processedResults.Add(item.Attribute("key").Value + i.ToString(), item.Value);
-                    i++;
-                }
-                else{
-                    processedResults.Add(item.Attribute("key").Value, item.Value);
-                }
-            }
-
-            return processedResults;
-        }
-
         // Adds an Element to the top level <data_block><dt_assoc></></>
         // of the form <item key="key">value</item>
         public void AddTopLevelItem(string key, string value){
             XElement topDt = baseDoc.Descendants("dt_assoc").First();
             XElement newItem = new XElement("item",
-                new XAttribute("key", $"{key}"),
+                new XAttribute("key", key),
                 value
             );
             topDt.Add(newItem);
@@ -87,8 +65,8 @@ namespace OpenSRSLib
             foreach (var item in list)
             {
                 XElement newAttribute = new XElement("item",
-                    new XAttribute("key", $"{item.Key}"),
-                    $"{item.Value}"
+                    new XAttribute("key", item.Key),
+                    item.Value
                 );
                 dt.Add(newAttribute);
             }
@@ -113,7 +91,7 @@ namespace OpenSRSLib
                                         "XCP"),
                                     new XElement("item",
                                         new XAttribute("key", "action"),
-                                        $"{action}"),              // proforming a lookup
+                                        action),              // proforming a lookup
                                     new XElement("item",
                                         new XAttribute("key", "object"),
                                         "DOMAIN"),              // of a domain
@@ -137,6 +115,48 @@ namespace OpenSRSLib
             StringWriter writer = new Utf8StringWriter();
             xDoc.Save(writer, SaveOptions.None);
             return writer.ToString();
+        }
+
+
+        // takes Request results XML string and returns a Dictionary
+        // of key names and values
+        // ex: <item key="moop">floop</item> returns
+        // { "moop", "floop" }
+        public static Dictionary<string, string> ProcessResponse(string results){
+            var doc = XDocument.Parse(results);
+            Dictionary<string, string> processedResults = new Dictionary<string, string>();
+            foreach (var item in doc.Descendants("item"))
+            {
+                int i;
+                string key;
+                string value = ClearDecendentsAsValue(item);
+
+                string keyName = item.Attribute("key").Value;
+                if(processedResults.TryGetValue(keyName, out key)){  // check for duplicate keys
+                    string[] s = keyName.Split("-");                   // try to split the duplicated key string
+                    if(s.Length > 1 && Int32.TryParse(s[1], out i)){    // if there is a number at the end of it
+                        processedResults.Add($"{s[0]}-{++i}", value); // new key incremented from previous
+                    }
+                    else{                                               // no number at the end
+                        processedResults.Add($"{s[0]}-1", value);  // add "-1"
+                    };
+                }
+                else{
+                    processedResults.Add(keyName, value);
+                }
+            }
+
+            return processedResults;
+        }
+
+
+        private static string ClearDecendentsAsValue(XElement item){
+            if(item.HasElements){
+                return "";
+            }
+            else{
+                return item.Value;
+            }
         }
     }
 }

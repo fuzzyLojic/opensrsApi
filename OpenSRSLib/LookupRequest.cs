@@ -3,15 +3,15 @@ using System.Collections.Generic;
 // Determines the availablity of a domain
 namespace OpenSRSLib
 {
-    public class Lookup : Request
+    public class LookupRequest : Request
     {
         private string domain;
         private short nocache;
 
-        // Lookup Contructor
+        // LookupRequest Contructor
         // takes string "domain" - domain name to be seached for availability
         // optional nocache - 0 = looks in OpenSRS cached results, 1 = looks to applicable registry
-        public Lookup(string domain, short nocache = 0){
+        public LookupRequest(string domain, short nocache = 0){
             this.domain = domain;
             this.nocache = nocache;
             xml = BuildXML();

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 namespace OpenSRSLib
 {
     // "reg_type" = new
-    public class RegisterNewDefault : Register
+    public class RegisterNewDefaultRequest : Register
     {
-        public RegisterNewDefault(string domain, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
+        public RegisterNewDefaultRequest(string domain, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;
             this.period = period;
