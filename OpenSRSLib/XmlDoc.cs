@@ -1,8 +1,10 @@
 using System;
+using System.Text;
 using System.Xml.Linq;              // to create XDocument
 using System.Linq;
 using System.IO;                    // to convert XDocument to API usable string using StringWriter
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace OpenSRSLib
 {
@@ -117,12 +119,47 @@ namespace OpenSRSLib
             return writer.ToString();
         }
 
+        // process the results of a Request into a JSON formatted string
+        public static string ToJson(string results){
+            XDocument xString = XDocument.Parse(results);
+
+            XElement el = xString.Descendants("item").First();
+            StringBuilder element = JsonHelper(el);
+            StringBuilder jsonString = new StringBuilder("[{" + element + "}]");
+            string json = jsonString.ToString();
+            json.Replace("\n", "");
+            return json;
+        }
+
+        // recursive 
+        private static StringBuilder JsonHelper(XElement el){
+            StringBuilder jsonString = new StringBuilder("");
+            if(!el.HasElements){    // does not have elements in value
+                jsonString.Append("\"" + el.Attribute("key").Value + "\": \"" + el.Value + "\"");
+                if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
+                    StringBuilder element = JsonHelper(el.ElementsAfterSelf().First());
+                    return jsonString.Append($",{element}");
+                }
+                else{   // no more sibling elements
+                    return jsonString;
+                }
+            }
+            else{   // has more elements in value
+                StringBuilder element = JsonHelper(el.Descendants("item").First());
+                jsonString.Append("\"" + el.Attribute("key").Value + "\": {" + element + "}");
+                if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
+                    StringBuilder _element = JsonHelper(el.ElementsAfterSelf().First());
+                    jsonString.Append($",{_element}");
+                }
+                return jsonString;  // no more sibling elements
+            }
+        }
 
         // takes Request results XML string and returns a Dictionary
         // of key names and values
         // ex: <item key="moop">floop</item> returns
         // { "moop", "floop" }
-        public static Dictionary<string, string> ProcessResponse(string results){
+        public static Dictionary<string, string> ProcessToDictionary(string results){
             var doc = XDocument.Parse(results);
             Dictionary<string, string> processedResults = new Dictionary<string, string>();
             foreach (var item in doc.Descendants("item"))

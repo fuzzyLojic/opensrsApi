@@ -1,7 +1,8 @@
 using System;
 using System.Text;
-using System.Text.Json;
-using System.IO;
+using System.Xml.Linq;              // just to return an XDocument from Post
+using System.Text.Json;             // for connection information
+using System.IO;                    // for connection information
 using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography; // for MD5 encryption
@@ -17,6 +18,7 @@ namespace OpenSRSLib
         protected static Connection connectionDetails = GetConnectionDetails();
         protected string xml;
 
+        // review xml request doc before Posting
         public string XML { 
             get
             { 
@@ -39,16 +41,7 @@ namespace OpenSRSLib
             return xml;
         }
 
-        // takes Request results XML string and returns a Dictionary
-        // of key names and values
-        // ex: <item key="moop">floop</item> returns
-        // { "moop", "floop" }
-        // override to do additional processing
-        protected virtual Dictionary<string, string> ProcessedResults(string results){
-            return XmlDoc.ProcessResponse(results);
-        }          
-
-
+        
         // perform MD5 hash on input string
         protected static string MD5Hash(string input)
         {
@@ -61,9 +54,15 @@ namespace OpenSRSLib
             }
         }
 
+        // used to process Post results further before returning
+        protected virtual void Preprocceing(string results){
+            return;
+        }
 
-        public async Task<Dictionary<string, string>> Post()
+        // internal use: actual Post of Request object
+        protected async Task<string> PostRequest()
         {        
+            string results;
             try
             {
                 HttpClient client = new HttpClient();
@@ -74,17 +73,25 @@ namespace OpenSRSLib
                 content.Headers.ContentLength = this.xml.Length;
 
                 HttpResponseMessage response = await client.PostAsync(connectionDetails.ApiHostPort, content);
-                string results = await response.Content.ReadAsStringAsync();
+                results = await response.Content.ReadAsStringAsync();
 
                 client.Dispose();
-                return ProcessedResults(results);
             }
             catch (Exception e)
             {
                 ErrorHandling("Oops! Post broke...\n" + e, 0);
-                return new Dictionary<string, string>();
+                return "";
             }
+
+            Preprocceing(results);  // use results before returning to requestor
+            return results;
         }
+
+        // external use: used to have Request object Posted
+        public string Post(){
+            Task<string> task = PostRequest();
+            return task.Result.ToString();
+        }   
 
         // get reseller username, api host port, and api key from connection.json
         protected static Connection GetConnectionDetails()
@@ -100,6 +107,7 @@ namespace OpenSRSLib
             }
         }
 
+        // helper function to get account information from file
         protected static IEnumerable<Connection> GetConnectionInfo(){
             using (var jsonFileReader = File.OpenText("OpenSRSLib/AccountInformation/connection.json"))
             {
@@ -110,6 +118,7 @@ namespace OpenSRSLib
                 });
             }
         }
+
 
         public static void ErrorHandling(string error, short errorCode){
             Console.WriteLine($"{error}\n\nError Code: {errorCode}");
