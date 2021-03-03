@@ -79,7 +79,7 @@ namespace OpenSRSLib
             }
             catch (Exception e)
             {
-                ErrorHandling("Oops! Post broke...\n" + e, 0);
+                ErrorHandling("Oops! Post broke...\nIs your IP whitelisted in live mode?\nHas the password expired?\n" + e, 5);
                 return "";
             }
 
