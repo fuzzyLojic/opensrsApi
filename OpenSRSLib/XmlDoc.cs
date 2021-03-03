@@ -131,27 +131,23 @@ namespace OpenSRSLib
             return json;
         }
 
-        // recursive 
+        // recursive JSON string builder
         private static StringBuilder JsonHelper(XElement el){
             StringBuilder jsonString = new StringBuilder("");
-            if(!el.HasElements){    // does not have elements in value
+            if(!el.HasElements){    // does not have descendents
                 jsonString.Append("\"" + el.Attribute("key").Value + "\": \"" + el.Value + "\"");
-                if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
-                    StringBuilder element = JsonHelper(el.ElementsAfterSelf().First());
-                    return jsonString.Append($",{element}");
-                }
-                else{   // no more sibling elements
-                    return jsonString;
-                }
             }
-            else{   // has more elements in value
+            else{   // has descendents
                 StringBuilder element = JsonHelper(el.Descendants("item").First());
                 jsonString.Append("\"" + el.Attribute("key").Value + "\": {" + element + "}");
-                if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
-                    StringBuilder _element = JsonHelper(el.ElementsAfterSelf().First());
-                    jsonString.Append($",{_element}");
-                }
-                return jsonString;  // no more sibling elements
+            }
+
+            if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
+                StringBuilder element = JsonHelper(el.ElementsAfterSelf().First());
+                return jsonString.Append($",{element}");
+            }
+            else{   // no more sibling elements
+                return jsonString;
             }
         }
 

@@ -26,10 +26,10 @@ namespace opensrsApi
             // }
 
             // ex: parse to JSON
-            // string json = XmlDoc.ToJson(result);
-            // Console.WriteLine(json);
-            // JsonDocument jsonDoc = JsonDocument.Parse(json);
-            // Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement[0].GetProperty("is_success").GetString()}");
+            string json = XmlDoc.ToJson(result);
+            Console.WriteLine(json);
+            JsonDocument jsonDoc = JsonDocument.Parse(json);
+            Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement[0].GetProperty("is_success").GetString()}");
 
             /*** End Lookup Availabilty Of Domain ***/
 
