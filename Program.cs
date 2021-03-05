@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Text.Json;
 using OpenSRSLib;                   // needed to change encoding for StringWriter from utf-16
+using System.Net.Http;
 
 namespace opensrsApi
 {
@@ -13,9 +14,9 @@ namespace opensrsApi
             // Request.isInTestMode = true;
 
             /*** Begin Lookup Availabilty Of Domain ***/
-            LookupRequest req = new LookupRequest("hoobajab.com");
-            string result = req.Post();
-            Console.WriteLine(result);
+            // LookupRequest req = new LookupRequest("hoobajab.com");
+            // string result = req.Post();
+            // Console.WriteLine(result);
 
             // ex: parse to XML
             // XDocument xDoc = XDocument.Parse(result);
@@ -26,10 +27,10 @@ namespace opensrsApi
             // }
 
             // ex: parse to JSON
-            string json = XmlDoc.ToJson(result);
-            Console.WriteLine(json);
-            JsonDocument jsonDoc = JsonDocument.Parse(json);
-            Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement[0].GetProperty("is_success").GetString()}");
+            // string json = XmlDoc.ToJson(result);
+            // Console.WriteLine(json);
+            // JsonDocument jsonDoc = JsonDocument.Parse(json);
+            // Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement.GetProperty("is_success").GetString()}");
 
             /*** End Lookup Availabilty Of Domain ***/
 
@@ -96,122 +97,129 @@ namespace opensrsApi
             // Console.WriteLine(result);
             /*** Begin Set DNS MX record ***/
 
-            // Console.WriteLine(XmlDoc.CheckForDecendents());
+            /*** Begin Get All Info ***/
+            GetAllInfoRequest req = new GetAllInfoRequest("hoobajab2.com");
+            string result = req.Post();
+            Console.WriteLine(result);
+
+            string json = XmlDoc.ToJson(result);
+            Console.WriteLine(json);
+            /*** End Get All Info ***/
 
 
             /*** Begin JSON Test ***/
-//             string json = @"<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
-// <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
-// <OPS_envelope>
-//  <header>
-//   <version>0.9</version>
-//   </header>
-//  <body>
-//   <data_block>
-//    <dt_assoc>
-//     <item key='protocol'>XCP</item>
-//     <item key='object'>DOMAIN</item>
-//     <item key='action'>SW_REGISTER</item>
-//     <item key='attributes'>
-//      <dt_assoc>
-//       <item key='f_parkp'>Y</item>
-//       <item key='affiliate_id'></item>
-//       <item key='auto_renew'></item>
-//       <item key='comments'>Sample comment</item>
-//       <item key='domain'>example2rwetw42tt4t.com</item>
-//       <item key='reg_type'>new</item>
-//       <item key='reg_username'>daniel</item>
-//       <item key='reg_password'>adf3wyt444fvfc3</item>
-//       <item key='f_whois_privacy'>1</item>
-//       <item key='period'>1</item>
-//       <item key='link_domains'>0</item>
-//       <item key='custom_nameservers'>1</item>
-//       <item key='f_lock_domain'>1</item>
-//       <item key='reg_domain'></item>
-//       <item key='contact_set'>
-//        <dt_assoc>
-//         <item key='admin'>
-//          <dt_assoc>
-//           <item key='country'>US</item>
-//           <item key='address3'>Admin</item>
-//           <item key='org_name'>Example Inc.</item>
-//           <item key='phone'>+1.4165550123x1812</item>
-//           <item key='state'>CA</item>
-//           <item key='address2'>Suite 100</item>
-//           <item key='last_name'>Adams</item>
-//           <item key='email'>adams@example.com</item>
-//           <item key='city'>Santa Clara</item>
-//           <item key='postal_code'>90210</item>
-//           <item key='fax'>+1.4165550125</item>
-//           <item key='address1'>32 Oak Street</item>
-//           <item key='first_name'>Adler</item>
-//          </dt_assoc>
-//         </item>
-//         <item key='owner'>
-//          <dt_assoc>
-//           <item key='country'>US</item>
-//           <item key='address3'>Owner</item>
-//           <item key='org_name'>Example Inc.</item>
-//           <item key='phone'>+1.4165550123x1902</item>
-//           <item key='state'>CA</item>
-//           <item key='address2'>Suite 500</item>
-//           <item key='last_name'>Ottway</item>
-//           <item key='email'>ottway@example.com</item>
-//           <item key='city'>SomeCity</item>
-//           <item key='postal_code'>90210</item>
-//           <item key='fax'>+1.4165550124</item>
-//           <item key='address1'>32 Oak Street</item>
-//           <item key='first_name'>Owen</item>
-//          </dt_assoc>
-//         </item>
-//         <item key='billing'>
-//          <dt_assoc>
-//           <item key='country'>US</item>
-//           <item key='address3'>Billing</item>
-//           <item key='org_name'>Example Inc.</item>
-//           <item key='phone'>+1.4165550123x1248</item>
-//           <item key='state'>CA</item>
-//           <item key='address2'>Suite 200</item>
-//           <item key='last_name'>Burton</item>
-//           <item key='email'>burton@example.com</item>
-//           <item key='city'>Santa Clara</item>
-//           <item key='postal_code'>90210</item>
-//           <item key='fax'>+1.4165550136</item>
-//           <item key='address1'>32 Oak Street</item>
-//           <item key='first_name'>Bill</item>
-//          </dt_assoc>
-//         </item>
-//        </dt_assoc>
-//       </item>
-//       <item key='nameserver_list'>
-//        <dt_array>
-//         <item key='0'>
-//          <dt_assoc>
-//           <item key='name'>ns1.systemdns.com</item>
-//           <item key='sortorder'>1</item>
-//          </dt_assoc>
-//         </item>
-//         <item key='1'>
-//          <dt_assoc>
-//           <item key='name'>ns2.systemdns.com</item>
-//           <item key='sortorder'>2</item>
-//          </dt_assoc>
-//         </item>
-//        </dt_array>
-//       </item>
-//       <item key='encoding_type'></item>
-//       <item key='custom_tech_contact'>0</item>
-//      </dt_assoc>
-//     </item>
-//     <item key='registrant_ip'>10.0.10.19</item>
-//    </dt_assoc>
-//   </data_block>
-//  </body>
-// </OPS_envelope>";
-//             json = XmlDoc.ToJson(json);
-//             Console.WriteLine(json);
-//             JsonDocument jsonDoc = JsonDocument.Parse(json);
-//             Console.WriteLine($"\n\nJson:\nadmin address1: {jsonDoc.RootElement[0].GetProperty("attributes").GetProperty("contact_set").GetProperty("admin").GetProperty("address1").GetString()}");
+            //             string json = @"<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+            // <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
+            // <OPS_envelope>
+            //  <header>
+            //   <version>0.9</version>
+            //   </header>
+            //  <body>
+            //   <data_block>
+            //    <dt_assoc>
+            //     <item key='protocol'>XCP</item>
+            //     <item key='object'>DOMAIN</item>
+            //     <item key='action'>SW_REGISTER</item>
+            //     <item key='attributes'>
+            //      <dt_assoc>
+            //       <item key='f_parkp'>Y</item>
+            //       <item key='affiliate_id'></item>
+            //       <item key='auto_renew'></item>
+            //       <item key='comments'>Sample comment</item>
+            //       <item key='domain'>example2rwetw42tt4t.com</item>
+            //       <item key='reg_type'>new</item>
+            //       <item key='reg_username'>daniel</item>
+            //       <item key='reg_password'>adf3wyt444fvfc3</item>
+            //       <item key='f_whois_privacy'>1</item>
+            //       <item key='period'>1</item>
+            //       <item key='link_domains'>0</item>
+            //       <item key='custom_nameservers'>1</item>
+            //       <item key='f_lock_domain'>1</item>
+            //       <item key='reg_domain'></item>
+            //       <item key='contact_set'>
+            //        <dt_assoc>
+            //         <item key='admin'>
+            //          <dt_assoc>
+            //           <item key='country'>US</item>
+            //           <item key='address3'>Admin</item>
+            //           <item key='org_name'>Example Inc.</item>
+            //           <item key='phone'>+1.4165550123x1812</item>
+            //           <item key='state'>CA</item>
+            //           <item key='address2'>Suite 100</item>
+            //           <item key='last_name'>Adams</item>
+            //           <item key='email'>adams@example.com</item>
+            //           <item key='city'>Santa Clara</item>
+            //           <item key='postal_code'>90210</item>
+            //           <item key='fax'>+1.4165550125</item>
+            //           <item key='address1'>32 Oak Street</item>
+            //           <item key='first_name'>Adler</item>
+            //          </dt_assoc>
+            //         </item>
+            //         <item key='owner'>
+            //          <dt_assoc>
+            //           <item key='country'>US</item>
+            //           <item key='address3'>Owner</item>
+            //           <item key='org_name'>Example Inc.</item>
+            //           <item key='phone'>+1.4165550123x1902</item>
+            //           <item key='state'>CA</item>
+            //           <item key='address2'>Suite 500</item>
+            //           <item key='last_name'>Ottway</item>
+            //           <item key='email'>ottway@example.com</item>
+            //           <item key='city'>SomeCity</item>
+            //           <item key='postal_code'>90210</item>
+            //           <item key='fax'>+1.4165550124</item>
+            //           <item key='address1'>32 Oak Street</item>
+            //           <item key='first_name'>Owen</item>
+            //          </dt_assoc>
+            //         </item>
+            //         <item key='billing'>
+            //          <dt_assoc>
+            //           <item key='country'>US</item>
+            //           <item key='address3'>Billing</item>
+            //           <item key='org_name'>Example Inc.</item>
+            //           <item key='phone'>+1.4165550123x1248</item>
+            //           <item key='state'>CA</item>
+            //           <item key='address2'>Suite 200</item>
+            //           <item key='last_name'>Burton</item>
+            //           <item key='email'>burton@example.com</item>
+            //           <item key='city'>Santa Clara</item>
+            //           <item key='postal_code'>90210</item>
+            //           <item key='fax'>+1.4165550136</item>
+            //           <item key='address1'>32 Oak Street</item>
+            //           <item key='first_name'>Bill</item>
+            //          </dt_assoc>
+            //         </item>
+            //        </dt_assoc>
+            //       </item>
+            //       <item key='nameserver_list'>
+            //        <dt_array>
+            //         <item key='0'>
+            //          <dt_assoc>
+            //           <item key='name'>ns1.systemdns.com</item>
+            //           <item key='sortorder'>1</item>
+            //          </dt_assoc>
+            //         </item>
+            //         <item key='1'>
+            //          <dt_assoc>
+            //           <item key='name'>ns2.systemdns.com</item>
+            //           <item key='sortorder'>2</item>
+            //          </dt_assoc>
+            //         </item>
+            //        </dt_array>
+            //       </item>
+            //       <item key='encoding_type'></item>
+            //       <item key='custom_tech_contact'>0</item>
+            //      </dt_assoc>
+            //     </item>
+            //     <item key='registrant_ip'>10.0.10.19</item>
+            //    </dt_assoc>
+            //   </data_block>
+            //  </body>
+            // </OPS_envelope>";
+            //             json = XmlDoc.ToJson(json);
+            //             Console.WriteLine(json);
+            //             JsonDocument jsonDoc = JsonDocument.Parse(json);
+            //             Console.WriteLine($"\n\nJson:\nadmin address1: {jsonDoc.RootElement[0].GetProperty("attributes").GetProperty("contact_set").GetProperty("admin").GetProperty("address1").GetString()}");
 
             /*** End JSON Test ***/
         }   

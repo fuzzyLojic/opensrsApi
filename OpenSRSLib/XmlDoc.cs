@@ -125,7 +125,7 @@ namespace OpenSRSLib
 
             XElement el = xString.Descendants("item").First();
             StringBuilder element = JsonHelper(el);
-            StringBuilder jsonString = new StringBuilder("[{" + element + "}]");
+            StringBuilder jsonString = new StringBuilder("{" + element + "}");
             string json = jsonString.ToString();
             json.Replace("\n", "");
             return json;
@@ -138,12 +138,12 @@ namespace OpenSRSLib
                 jsonString.Append("\"" + el.Attribute("key").Value + "\": \"" + el.Value + "\"");
             }
             else{   // has descendents
-                StringBuilder element = JsonHelper(el.Descendants("item").First());
+                StringBuilder element = el.Descendants("item").Count() > 0 ? JsonHelper(el.Descendants("item").First()) : new StringBuilder("");
                 jsonString.Append("\"" + el.Attribute("key").Value + "\": {" + element + "}");
             }
 
             if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
-                StringBuilder element = JsonHelper(el.ElementsAfterSelf().First());
+                StringBuilder element = JsonHelper(el.ElementsAfterSelf("item").First());
                 return jsonString.Append($",{element}");
             }
             else{   // no more sibling elements

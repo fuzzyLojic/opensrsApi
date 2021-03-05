@@ -120,6 +120,29 @@ namespace OpenSRSLib
         }
 
 
+        protected async Task<string> GetPublicIP(){
+            string results;
+            try
+            {
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync("http://icanhazip.com");
+                results = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                ErrorHandling("Oops! GetIP broke...\n" + e, 5);
+                return "";
+            }
+
+            return results;
+        }
+
+        public string GetIp(){
+            Task<string> ip = GetPublicIP();
+            return ip.Result.ToString();
+        }
+
+
         public static void ErrorHandling(string error, short errorCode){
             Console.WriteLine($"{error}\n\nError Code: {errorCode}");
             System.Environment.Exit(errorCode);
