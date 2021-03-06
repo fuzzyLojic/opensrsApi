@@ -2,8 +2,10 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class SetDnsRequest : Dns
+    public class SetDnsRequest : DnsZone
     {
+        private string action;
+
         public SetDnsRequest(string domain, List<ARecord> aRecords, List<AAAARecord> aaaaRecords, List<CNameRecord> cNames, List<MXRecord> mxRecords, List<TXTRecord> txtRecords, List<SRVRecord> srvRecords)
         {
             this.domain = domain;
@@ -13,11 +15,12 @@ namespace OpenSRSLib
             this.mxRecords = mxRecords;
             this.txtRecords = txtRecords;
             this.srvRecords = srvRecords;
+            CheckNew();
             xml = BuildXML();
         }
 
         protected override string BuildXML(){
-            XmlDoc doc = new XmlDoc("set_dns_zone");
+            XmlDoc doc = new XmlDoc(action);
             Dictionary<string, string> attributes = new Dictionary<string, string>()
             {
                 {"domain", domain},
@@ -73,16 +76,25 @@ namespace OpenSRSLib
 
 
         private void AddRecordTypeList(XmlDoc doc, string type, List<DnsRecord> records){
-                Dictionary<string, string> recordsType = new Dictionary<string, string>();
-                for(int i = 0; i < records.Count; i++){
-                    recordsType.Add(i.ToString(), "");
-                }
-
-                doc.AddItemList(type, "dt_array", recordsType);
-
-                for(int i = 0; i < records.Count; i++){
-                    doc.AddItemSubList(type, i.ToString(), "dt_assoc", records[i].Record);
-                }
+            Dictionary<string, string> recordsType = new Dictionary<string, string>();
+            for(int i = 0; i < records.Count; i++){
+                recordsType.Add(i.ToString(), "");
             }
+
+            doc.AddItemList(type, "dt_array", recordsType);
+
+            for(int i = 0; i < records.Count; i++){
+                doc.AddItemSubList(type, i.ToString(), "dt_assoc", records[i].Record);
+            }
+        }
+
+        // if GetDnsRequest is invalid, no dns zone exists and a new one
+        // must be created
+        // if it is valid, we set it with the new values
+        private void CheckNew(){
+            GetDnsRequest req = new GetDnsRequest(domain);
+            req.Post();
+            action = req.IsValid ? "set_dns_zone" : "create_dns_zone";
+        }
     }
 }

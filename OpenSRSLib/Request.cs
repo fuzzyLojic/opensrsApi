@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography; // for MD5 encryption
 using System.Threading.Tasks;       // needed for Task object for PostAsync
 using System.Net.Http;
+using System.Net;
 
 
 namespace OpenSRSLib
@@ -43,7 +44,7 @@ namespace OpenSRSLib
 
         
         // perform MD5 hash on input string
-        protected static string MD5Hash(string input)
+        protected string MD5Hash(string input)
         {
             using (MD5 md5 = MD5.Create())
             {
@@ -55,12 +56,12 @@ namespace OpenSRSLib
         }
 
         // used to process Post results further before returning
-        protected virtual void Preprocceing(string results){
+        protected virtual void Preprocessing(string results){
             return;
         }
 
         // internal use: actual Post of Request object
-        protected async Task<string> PostRequest()
+        public async Task<string> PostRequest()
         {        
             string results;
             try
@@ -83,7 +84,7 @@ namespace OpenSRSLib
                 return "";
             }
 
-            Preprocceing(results);  // use results before returning to requestor
+            Preprocessing(results);  // use results before returning to requestor
             return results;
         }
 
@@ -121,20 +122,27 @@ namespace OpenSRSLib
 
 
         protected async Task<string> GetPublicIP(){
-            string results;
-            try
-            {
-                HttpClient client = new HttpClient();
-                HttpResponseMessage response = await client.GetAsync("http://icanhazip.com");
-                results = await response.Content.ReadAsStringAsync();
+            string ipRequest;
+            if(isInTestMode){
+                try
+                {
+                    HttpClient client = new HttpClient();
+                    HttpResponseMessage response = await client.GetAsync("http://icanhazip.com");
+                    ipRequest = await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception e)
+                {
+                    ErrorHandling("Oops! GetIP broke...\n" + e, 5);
+                    return "";
+                }
             }
-            catch (Exception e)
-            {
-                ErrorHandling("Oops! GetIP broke...\n" + e, 5);
-                return "";
+            else{
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                ipRequest = ipAddress.ToString();
             }
 
-            return results;
+            return ipRequest.Replace("\n", "").Replace("\r", "");
         }
 
         public string GetIp(){

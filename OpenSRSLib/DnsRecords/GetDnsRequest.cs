@@ -1,9 +1,18 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace OpenSRSLib
 {
-    public class GetDnsRequest : Dns
-    {        
+    public class GetDnsRequest : DnsZone
+    {
+        private bool isValid;
+
+        public bool IsValid { 
+            get{
+                return isValid;
+            }
+        }
+
         public GetDnsRequest(string domain){
             this.domain = domain;
             xml = BuildXML();
@@ -19,6 +28,11 @@ namespace OpenSRSLib
             doc.AddItemList("attributes", "dt_assoc", attributes);
 
             return doc.XDocString;
+        }
+
+        protected override void Preprocessing(string results)
+        {
+            isValid = !Regex.Match(results, @"not found").Success;
         }
     }
 }

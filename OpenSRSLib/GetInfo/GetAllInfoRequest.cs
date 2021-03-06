@@ -1,9 +1,20 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+
+// Returns "Authentication Error" if searched domain is not in account
 
 namespace OpenSRSLib
 {
     public class GetAllInfoRequest : GetInfo
     {
+        private bool isValid;
+
+        public bool IsValid { 
+            get{
+                return isValid;
+            }
+        }
+
         public GetAllInfoRequest(string domain){
             this.domain = domain;
             xml = BuildXML();
@@ -22,6 +33,11 @@ namespace OpenSRSLib
             doc.AddTopLevelItem("registrant_ip", this.GetIp());
 
             return doc.XDocString;
+        }
+
+        protected override void Preprocessing(string results)
+        {
+            isValid = !Regex.Match(results, @"Authentication Error").Success;
         }
     }
 }

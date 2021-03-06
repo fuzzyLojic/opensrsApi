@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class Dns : Request
+    public class DnsZone : Request
     {
         protected string domain;
         protected List<ARecord> aRecords;

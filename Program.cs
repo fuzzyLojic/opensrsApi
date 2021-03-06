@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using System.Text.Json;
 using OpenSRSLib;                   // needed to change encoding for StringWriter from utf-16
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace opensrsApi
 {
@@ -14,11 +15,11 @@ namespace opensrsApi
             // Request.isInTestMode = true;
 
             /*** Begin Lookup Availabilty Of Domain ***/
-            // LookupRequest req = new LookupRequest("hoobajab.com");
+            // LookupRequest req = new LookupRequest("hoobajab3.com");            
             // string result = req.Post();
             // Console.WriteLine(result);
 
-            // ex: parse to XML
+            /*** ex: parse to XML ***/
             // XDocument xDoc = XDocument.Parse(result);
             // Console.WriteLine("\n\nXML:");
             // foreach (var item in xDoc.Descendants("item"))
@@ -26,7 +27,7 @@ namespace opensrsApi
             //     Console.WriteLine($"key: {item.Attribute("key").Value}  value: {item.Value}");
             // }
 
-            // ex: parse to JSON
+            /*** ex: parse to JSON ***/
             // string json = XmlDoc.ToJson(result);
             // Console.WriteLine(json);
             // JsonDocument jsonDoc = JsonDocument.Parse(json);
@@ -70,20 +71,20 @@ namespace opensrsApi
             /*** End Register a New Domain using Custom Nameservers ***/
 
             /*** Begin Get DNS records ***/
-            // GetDnsRequest req = new GetDnsRequest("hoobajab.com");
+            // GetDnsRequest req = new GetDnsRequest("hoobajab4.com");
             // string result = req.Post();
             // Console.WriteLine(result);
             /*** End Get DNS records ***/
 
             /*** Begin Set DNS A record***/
-            // List<ARecord> aList = new List<ARecord>(){
-            //     new ARecord("123.45.6.214")
-            // };
-            // SetDnsRequest req = new SetDnsRequest("hoobajab.com", aList, null, null, null, null, null);
+            List<ARecord> aList = new List<ARecord>(){
+                new ARecord("123.45.6.214")
+            };
+            SetDnsRequest req = new SetDnsRequest("hoobajab5.com", aList, null, null, null, null, null);
 
-            // Console.WriteLine(req.XML);
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            Console.WriteLine(req.XML);
+            string result = req.Post();
+            Console.WriteLine(result);
             /*** Begin Set DNS A record ***/
 
             /*** Begin Set DNS MX record***/
@@ -98,12 +99,14 @@ namespace opensrsApi
             /*** Begin Set DNS MX record ***/
 
             /*** Begin Get All Info ***/
-            GetAllInfoRequest req = new GetAllInfoRequest("hoobajab2.com");
-            string result = req.Post();
-            Console.WriteLine(result);
+            // GetAllInfoRequest req = new GetAllInfoRequest("hoobajab.com");
+            // string result = req.Post();
+            // // example of Preprocessing function
+            // Console.WriteLine($"isValid: {req.IsValid}");
+            // Console.WriteLine(result);
 
-            string json = XmlDoc.ToJson(result);
-            Console.WriteLine(json);
+            // string json = XmlDoc.ToJson(result);
+            // Console.WriteLine(json);
             /*** End Get All Info ***/
 
 

@@ -4,7 +4,6 @@ using System.Xml.Linq;              // to create XDocument
 using System.Linq;
 using System.IO;                    // to convert XDocument to API usable string using StringWriter
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace OpenSRSLib
 {
