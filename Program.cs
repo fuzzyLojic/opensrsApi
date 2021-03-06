@@ -15,12 +15,13 @@ namespace opensrsApi
             // Request.isInTestMode = true;
 
             /*** Begin Lookup Availabilty Of Domain ***/
-            // LookupRequest req = new LookupRequest("hoobajab3.com");            
-            // string result = req.Post();
+            LookupRequest req = new LookupRequest("hoobajab.com"); 
+            req.Post();
+            Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             // Console.WriteLine(result);
 
             /*** ex: parse to XML ***/
-            // XDocument xDoc = XDocument.Parse(result);
+            // XDocument xDoc = req.Response.ToXml;
             // Console.WriteLine("\n\nXML:");
             // foreach (var item in xDoc.Descendants("item"))
             // {
@@ -28,7 +29,7 @@ namespace opensrsApi
             // }
 
             /*** ex: parse to JSON ***/
-            // string json = XmlDoc.ToJson(result);
+            // string json = req.Response.ToJson;
             // Console.WriteLine(json);
             // JsonDocument jsonDoc = JsonDocument.Parse(json);
             // Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement.GetProperty("is_success").GetString()}");
@@ -41,11 +42,9 @@ namespace opensrsApi
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
 
             // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("hoobajab6.com", 1, owner, admin, admin, admin);
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             // /*** End Register a New Domain using Default Nameservers ***/
-            // string json = XmlDoc.ToJson(result);
-            // Console.WriteLine(json);
 
             /*** Begin Register a New Domain using Custom Nameservers ***/
             // ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
@@ -54,8 +53,8 @@ namespace opensrsApi
 
             // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("geeblgorp.com", 1, owner, admin, admin, admin, ns);
 
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Register a New Domain using Custom Nameservers ***/
 
 
@@ -66,46 +65,47 @@ namespace opensrsApi
 
             // RegisterTransferDefaultRequest req = new RegisterTransferDefaultRequest("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
 
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Register a New Domain using Custom Nameservers ***/
 
             /*** Begin Get DNS records ***/
             // GetDnsRequest req = new GetDnsRequest("hoobajab4.com");
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Get DNS records ***/
 
             /*** Begin Set DNS A record***/
-            List<ARecord> aList = new List<ARecord>(){
-                new ARecord("123.45.6.214")
-            };
-            SetDnsRequest req = new SetDnsRequest("hoobajab5.com", aList, null, null, null, null, null);
+            // List<ARecord> aList = new List<ARecord>(){
+            //     new ARecord("123.45.6.214")
+            // };
+            // SetDnsRequest req = new SetDnsRequest("hoobajab5.com", aList, null, null, null, null, null);
 
-            Console.WriteLine(req.XML);
-            string result = req.Post();
-            Console.WriteLine(result);
+            // Console.WriteLine(req.XML);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine(req.Response.ToJson());
             /*** Begin Set DNS A record ***/
 
             /*** Begin Set DNS MX record***/
             // List<MXRecord> mxList = new List<MXRecord>(){
-            //     new MXRecord("mx1.moop.com", 5, "www"),
-            //     new MXRecord("mx2.moop.com", 10, "www")
+            //     new MXRecord("mx4.moop.com", 5, "www"),
+            //     new MXRecord("mx5.moop.com", 10, "www")
             // };
-            // SetDnsRequest req = new SetDnsRequest("hoobajab.com", null, null, null, mxList, null, null);
+            // SetDnsRequest req = new SetDnsRequest("hoobajab2.com", null, null, null, mxList, null, null);
 
-            // string result = req.Post();
-            // Console.WriteLine(result);
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** Begin Set DNS MX record ***/
 
             /*** Begin Get All Info ***/
             // GetAllInfoRequest req = new GetAllInfoRequest("hoobajab.com");
-            // string result = req.Post();
-            // // example of Preprocessing function
+            // req.Post();
+            // /** example of Preprocessing function **/
             // Console.WriteLine($"isValid: {req.IsValid}");
-            // Console.WriteLine(result);
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
 
-            // string json = XmlDoc.ToJson(result);
+            // string json = req.Response.ToJson;
             // Console.WriteLine(json);
             /*** End Get All Info ***/
 

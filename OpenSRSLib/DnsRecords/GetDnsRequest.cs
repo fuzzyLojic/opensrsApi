@@ -33,6 +33,7 @@ namespace OpenSRSLib
         protected override void Preprocessing(string results)
         {
             isValid = !Regex.Match(results, @"not found").Success;
+            base.Preprocessing(results);
         }
     }
 }

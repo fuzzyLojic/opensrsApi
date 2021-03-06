@@ -18,6 +18,7 @@ namespace OpenSRSLib
         public static bool isInTestMode = true;
         protected static Connection connectionDetails = GetConnectionDetails();
         protected string xml;
+        protected Response response;
 
         // review xml request doc before Posting
         public string XML { 
@@ -27,6 +28,12 @@ namespace OpenSRSLib
             }
         }
 
+        public Response Response { 
+            get
+            {
+                return response;
+            }
+        }
 
         // OpenSRS API IS CASE SENSITIVE FOR THE HASH AUTHENTICATION!!
         protected string Signature {
@@ -57,11 +64,12 @@ namespace OpenSRSLib
 
         // used to process Post results further before returning
         protected virtual void Preprocessing(string results){
+            response = XmlDoc.CreateResponse(results);
             return;
         }
 
         // internal use: actual Post of Request object
-        public async Task<string> PostRequest()
+        public async Task PostRequest()
         {        
             string results;
             try
@@ -81,17 +89,22 @@ namespace OpenSRSLib
             catch (Exception e)
             {
                 ErrorHandling("Oops! Post broke...\nIs your IP whitelisted in live mode?" + e, 5);
-                return "";
+                results = "";
+                // return "";
             }
 
             Preprocessing(results);  // use results before returning to requestor
-            return results;
+            // return this.Response;
+            // return results;
+            return;
         }
 
         // external use: used to have Request object Posted
-        public string Post(){
-            Task<string> task = PostRequest();
-            return task.Result.ToString();
+        public void Post(){
+            PostRequest().Wait();
+            return;
+            // return this.Response;
+            // return task.Result.ToString();
         }   
 
         // get reseller username, api host port, and api key from connection.json

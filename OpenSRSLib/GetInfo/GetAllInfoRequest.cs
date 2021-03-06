@@ -38,6 +38,7 @@ namespace OpenSRSLib
         protected override void Preprocessing(string results)
         {
             isValid = !Regex.Match(results, @"Authentication Error").Success;
+            base.Preprocessing(results);
         }
     }
 }

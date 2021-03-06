@@ -190,5 +190,18 @@ namespace OpenSRSLib
                 return item.Value;
             }
         }
+
+        public static Response CreateResponse(string results){
+            var doc = XDocument.Parse(results);
+            bool isSuccess = false;
+            if(doc.Descendants("item").Where(x => x.Attribute("key").Value == "is_success").First().Value == 1.ToString()){
+                isSuccess = true;
+            }
+            int responseCode = Convert.ToInt32(doc.Descendants("item").Where(x => x.Attribute("key").Value == "response_code").First().Value);
+            string responseText = doc.Descendants("item").Where(x => x.Attribute("key").Value == "response_text").First().Value;
+
+
+            return new Response(results, isSuccess, responseCode, responseText);
+        }
     }
 }
