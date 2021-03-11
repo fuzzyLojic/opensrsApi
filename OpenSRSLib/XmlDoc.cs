@@ -118,6 +118,10 @@ namespace OpenSRSLib
             return writer.ToString();
         }
 
+        /*** End Request Block ***/
+
+        /*** Begin Response Block ***/
+        
         // process the results of a Request into a JSON formatted string
         public static string ToJson(string results){
             XDocument xString = XDocument.Parse(results);
@@ -159,37 +163,30 @@ namespace OpenSRSLib
             Dictionary<string, string> processedResults = new Dictionary<string, string>();
             foreach (var item in doc.Descendants("item"))
             {
+                if(item.HasElements){   // skip items with decendents
+                    continue;
+                }
                 int i;
                 string key;
-                string value = ClearDecendentsAsValue(item);
 
                 string keyName = item.Attribute("key").Value;
                 if(processedResults.TryGetValue(keyName, out key)){  // check for duplicate keys
                     string[] s = keyName.Split("-");                   // try to split the duplicated key string
                     if(s.Length > 1 && Int32.TryParse(s[1], out i)){    // if there is a number at the end of it
-                        processedResults.Add($"{s[0]}-{++i}", value); // new key incremented from previous
+                        processedResults.Add($"{s[0]}-{++i}", item.Value); // new key incremented from previous
                     }
                     else{                                               // no number at the end
-                        processedResults.Add($"{s[0]}-1", value);  // add "-1"
+                        processedResults.Add($"{s[0]}-1", item.Value);  // add "-1"
                     };
                 }
                 else{
-                    processedResults.Add(keyName, value);
+                    processedResults.Add(keyName, item.Value);
                 }
             }
 
             return processedResults;
         }
 
-
-        private static string ClearDecendentsAsValue(XElement item){
-            if(item.HasElements){
-                return "";
-            }
-            else{
-                return item.Value;
-            }
-        }
 
         public static Response CreateResponse(string results){
             var doc = XDocument.Parse(results);
@@ -203,5 +200,7 @@ namespace OpenSRSLib
 
             return new Response(results, isSuccess, responseCode, responseText);
         }
+
+        /*** End Response Block ***/
     }
 }

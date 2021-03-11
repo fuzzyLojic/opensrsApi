@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+// Returns all information associated with a domain
 // Returns "Authentication Error" if searched domain is not in account
 
 namespace OpenSRSLib
 {
     public class GetAllInfoRequest : GetInfo
     {
-        private bool isValid;
+        private bool isValid;   // requested domain is in account
 
         public bool IsValid { 
             get{
@@ -35,6 +36,8 @@ namespace OpenSRSLib
             return doc.XDocString;
         }
 
+        // A Get all_info request returns "Authentication Error"
+        // if the requested Domain is not in account
         protected override void Preprocessing(string results)
         {
             isValid = !Regex.Match(results, @"Authentication Error").Success;

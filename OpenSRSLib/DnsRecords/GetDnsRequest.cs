@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
+// Returns DNS information for requested domain
+
 namespace OpenSRSLib
 {
     public class GetDnsRequest : DnsZone
     {
-        private bool isValid;
+        private bool isValid;   // domain is in account and has DNS info
 
         public bool IsValid { 
             get{
@@ -30,9 +32,11 @@ namespace OpenSRSLib
             return doc.XDocString;
         }
 
+        // Request returns "not found" if domain does not have DNS information
+        // or "Authentication Error" if domain is not in account
         protected override void Preprocessing(string results)
         {
-            isValid = !Regex.Match(results, @"not found").Success;
+            isValid = (!Regex.Match(results, @"not found").Success && !Regex.Match(results, @"Authentication Error").Success);
             base.Preprocessing(results);
         }
     }

@@ -15,13 +15,22 @@ namespace opensrsApi
             // Request.isInTestMode = true;
 
             /*** Begin Lookup Availabilty Of Domain ***/
-            LookupRequest req = new LookupRequest("hoobajab.com"); 
-            req.Post();
-            Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
-            // Console.WriteLine(result);
+            // LookupRequest req = new LookupRequest("hoobajab.com");
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+
+
+            /*** ex: run async ***/
+            // Task task = req.PostAsync();
+            // int i = 0;
+            // while(req.Response == null){
+            //     i++;
+            // }
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"i: {i}");
 
             /*** ex: parse to XML ***/
-            // XDocument xDoc = req.Response.ToXml;
+            // XDocument xDoc = req.Response.ToXDoc;
             // Console.WriteLine("\n\nXML:");
             // foreach (var item in xDoc.Descendants("item"))
             // {
@@ -41,7 +50,7 @@ namespace opensrsApi
             // ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
 
-            // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("hoobajab6.com", 1, owner, admin, admin, admin);
+            // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("hoobajab7.com", 1, owner, admin, admin, admin);
             // req.Post();
             // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             // /*** End Register a New Domain using Default Nameservers ***/
@@ -70,9 +79,9 @@ namespace opensrsApi
             /*** End Register a New Domain using Custom Nameservers ***/
 
             /*** Begin Get DNS records ***/
-            // GetDnsRequest req = new GetDnsRequest("hoobajab4.com");
+            // GetDnsRequest req = new GetDnsRequest("hoobajab.com");
             // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis valid: {req.IsValid}\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Get DNS records ***/
 
             /*** Begin Set DNS A record***/
@@ -101,13 +110,18 @@ namespace opensrsApi
             /*** Begin Get All Info ***/
             // GetAllInfoRequest req = new GetAllInfoRequest("hoobajab.com");
             // req.Post();
-            // /** example of Preprocessing function **/
             // Console.WriteLine($"isValid: {req.IsValid}");
             // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
 
             // string json = req.Response.ToJson;
             // Console.WriteLine(json);
             /*** End Get All Info ***/
+
+            /*** Begin Get Transfer Code ***/
+            AuthCodeRequest req = new AuthCodeRequest("hoobajab7.com");
+            req.Post();
+            Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            /*** End Get Transfer Code ***/
 
 
             /*** Begin JSON Test ***/

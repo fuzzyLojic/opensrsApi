@@ -68,8 +68,8 @@ namespace OpenSRSLib
             return;
         }
 
-        // internal use: actual Post of Request object
-        public async Task PostRequest()
+        // Post of Request object: does not block
+        public async Task PostAsync()
         {        
             string results;
             try
@@ -90,21 +90,18 @@ namespace OpenSRSLib
             {
                 ErrorHandling("Oops! Post broke...\nIs your IP whitelisted in live mode?" + e, 5);
                 results = "";
-                // return "";
             }
 
             Preprocessing(results);  // use results before returning to requestor
             // return this.Response;
-            // return results;
             return;
         }
 
-        // external use: used to have Request object Posted
+        // Post of Request object: does block
         public void Post(){
-            PostRequest().Wait();
+            PostAsync().Wait();
             return;
             // return this.Response;
-            // return task.Result.ToString();
         }   
 
         // get reseller username, api host port, and api key from connection.json

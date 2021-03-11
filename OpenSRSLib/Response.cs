@@ -44,7 +44,7 @@ namespace OpenSRSLib
             }
         }
 
-        public XDocument ToXml {
+        public XDocument ToXDoc {
             get
             {
                 return XDocument.Parse(responseString);

@@ -6,12 +6,12 @@ namespace OpenSRSLib
     public class LookupRequest : Request
     {
         private string domain;
-        private short nocache;
+        private ushort nocache;
 
         // LookupRequest Contructor
         // takes string "domain" - domain name to be seached for availability
         // optional nocache - 0 = looks in OpenSRS cached results, 1 = looks to applicable registry
-        public LookupRequest(string domain, short nocache = 0){
+        public LookupRequest(string domain, ushort nocache = 0){
             this.domain = domain;
             this.nocache = nocache;
             xml = BuildXML();
@@ -32,26 +32,3 @@ namespace OpenSRSLib
         }
     }
 }
-
-// Example of complete LOOKUP xml request:
-// <?xml version ='1.0' encoding='UTF-8' standalone='no'?>
-// <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
-// <OPS_envelope>
-// <header>      
-//     <version>0.9</version>
-// </header>
-// <body>
-// <data_block>      
-//     <dt_assoc>      
-//         <item key=""protocol"">XCP</item>       
-//         <item key=""action"">LOOKUP</item>        
-//         <item key=""object"">DOMAIN</item>         
-//         <item key=""attributes"">          
-//             <dt_assoc>          
-//                 <item key=""domain"">weomedia.com</item>           
-//             </dt_assoc>           
-//         </item>           
-//     </dt_assoc>
-// </data_block>
-// </body>
-// </OPS_envelope>
