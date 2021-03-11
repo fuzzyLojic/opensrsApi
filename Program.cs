@@ -118,10 +118,16 @@ namespace opensrsApi
             /*** End Get All Info ***/
 
             /*** Begin Get Transfer Code ***/
-            AuthCodeRequest req = new AuthCodeRequest("hoobajab7.com");
+            // AuthCodeRequest req = new AuthCodeRequest("hoobajab7.com");
+            // req.Post();
+            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            /*** End Get Transfer Code ***/
+
+            /*** Begin Unlock Domain ***/
+            UnlockRequest req = new UnlockRequest("hoobajab7.com");
             req.Post();
             Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
-            /*** End Get Transfer Code ***/
+            /*** End Unlock Domain ***/
 
 
             /*** Begin JSON Test ***/
