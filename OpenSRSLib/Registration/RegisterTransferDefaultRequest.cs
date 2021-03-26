@@ -3,8 +3,20 @@ using System.Collections.Generic;
 namespace OpenSRSLib
 {
     // "reg_type" = new
-    public class RegisterTransferDefaultRequest : Register
+    public class RegisterTransferDefaultRequest : Register<RegisterResponse>
     {
+        /// <summary>
+        /// Registers a domain for transfer. Limited to US using TLDs:
+        /// .COM, .NET, .ORG, .INFO, .BIZ, .NAME, .ME, and .MOBI
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="authInfo">Transfer Authorization Code (EPP)</param>
+        /// <param name="period">Length of registration period. 1 year - 10 year</param>
+        /// <param name="owner"></param>
+        /// <param name="admin"></param>
+        /// <param name="billing"></param>
+        /// <param name="tech"></param>
+        /// <param name="nameserverList"></param>
         public RegisterTransferDefaultRequest(string domain, string authInfo, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;

@@ -3,8 +3,19 @@ using System.Collections.Generic;
 namespace OpenSRSLib
 {
     // "reg_type" = new
-    public class RegisterNewDefaultRequest : Register
+    public class RegisterNewDefaultRequest : Register<RegisterResponse>
     {
+        /// <summary>
+        /// Register a new domain. Limited to US using TLDs:
+        /// .COM, .NET, .ORG, .INFO, .BIZ, .NAME, .ME, and .MOBI
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="period">Length of registration period. 1 year - 10 year</param>
+        /// <param name="owner"></param>
+        /// <param name="admin"></param>
+        /// <param name="billing"></param>
+        /// <param name="tech"></param>
+        /// <param name="nameserverList"></param>
         public RegisterNewDefaultRequest(string domain, ushort period, ContactSet owner, ContactSet admin = null, ContactSet billing = null, ContactSet tech = null, List<string> nameserverList = null)
         {
             this.domain = domain;

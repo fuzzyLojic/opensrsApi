@@ -1,9 +1,9 @@
-using System;
 using System.Text;
 using System.Xml.Linq;              // to create XDocument
 using System.Linq;
 using System.IO;                    // to convert XDocument to API usable string using StringWriter
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace OpenSRSLib
 {
@@ -124,8 +124,8 @@ namespace OpenSRSLib
         
         // process the results of a Request into a JSON formatted string
         public static string ToJson(string results){
-            XDocument xString = XDocument.Parse(results);
 
+            XDocument xString = XDocument.Parse(Regex.Replace(results, @"\t|\n|\r", " "));
             XElement el = xString.Descendants("item").First();
             StringBuilder element = JsonHelper(el);
             StringBuilder jsonString = new StringBuilder("{" + element + "}");
@@ -138,11 +138,19 @@ namespace OpenSRSLib
         private static StringBuilder JsonHelper(XElement el){
             StringBuilder jsonString = new StringBuilder("");
             if(!el.HasElements){    // does not have descendents
-                jsonString.Append("\"" + el.Attribute("key").Value + "\": \"" + el.Value + "\"");
+                jsonString.Append("\"" + el.Attribute("key").Value.Replace("_", "") + "\": \"" + el.Value + "\"");
             }
             else{   // has descendents
                 StringBuilder element = el.Descendants("item").Count() > 0 ? JsonHelper(el.Descendants("item").First()) : new StringBuilder("");
-                jsonString.Append("\"" + el.Attribute("key").Value + "\": {" + element + "}");
+                // create array
+                if(el.Descendants().First().Name == "dt_array"){
+                    element = new StringBuilder(Regex.Replace(element.ToString(), "\"[0-9]\":", ""));
+                    jsonString.Append("\"" + el.Attribute("key").Value.Replace("_", "") + "\": [" + element + "]");
+                }
+                // create single
+                else{
+                    jsonString.Append("\"" + el.Attribute("key").Value.Replace("_", "") + "\": {" + element + "}");
+                }                
             }
 
             if(el.ElementsAfterSelf().Count() > 0){ // has more sibling elements
@@ -152,53 +160,6 @@ namespace OpenSRSLib
             else{   // no more sibling elements
                 return jsonString;
             }
-        }
-
-        // takes Request results XML string and returns a Dictionary
-        // of key names and values
-        // ex: <item key="moop">floop</item> returns
-        // { "moop", "floop" }
-        public static Dictionary<string, string> ProcessToDictionary(string results){
-            var doc = XDocument.Parse(results);
-            Dictionary<string, string> processedResults = new Dictionary<string, string>();
-            foreach (var item in doc.Descendants("item"))
-            {
-                if(item.HasElements){   // skip items with decendents
-                    continue;
-                }
-                int i;
-                string key;
-
-                string keyName = item.Attribute("key").Value;
-                if(processedResults.TryGetValue(keyName, out key)){  // check for duplicate keys
-                    string[] s = keyName.Split("-");                   // try to split the duplicated key string
-                    if(s.Length > 1 && Int32.TryParse(s[1], out i)){    // if there is a number at the end of it
-                        processedResults.Add($"{s[0]}-{++i}", item.Value); // new key incremented from previous
-                    }
-                    else{                                               // no number at the end
-                        processedResults.Add($"{s[0]}-1", item.Value);  // add "-1"
-                    };
-                }
-                else{
-                    processedResults.Add(keyName, item.Value);
-                }
-            }
-
-            return processedResults;
-        }
-
-
-        public static Response CreateResponse(string results){
-            var doc = XDocument.Parse(results);
-            bool isSuccess = false;
-            if(doc.Descendants("item").Where(x => x.Attribute("key").Value == "is_success").First().Value == 1.ToString()){
-                isSuccess = true;
-            }
-            int responseCode = Convert.ToInt32(doc.Descendants("item").Where(x => x.Attribute("key").Value == "response_code").First().Value);
-            string responseText = doc.Descendants("item").Where(x => x.Attribute("key").Value == "response_text").First().Value;
-
-
-            return new Response(results, isSuccess, responseCode, responseText);
         }
 
         /*** End Response Block ***/

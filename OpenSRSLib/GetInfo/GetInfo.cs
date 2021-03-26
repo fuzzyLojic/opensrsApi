@@ -1,6 +1,6 @@
 namespace OpenSRSLib
 {
-    public class GetInfo : Request
+    public class GetInfo<T> : Request<T>
     {
         protected string domain;
         protected bool activeContactsOnly;    // optional: gets ACTIVE contacts regardless of transfer status

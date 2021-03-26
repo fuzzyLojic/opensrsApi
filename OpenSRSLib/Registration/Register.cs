@@ -6,7 +6,7 @@ using System.Linq;
 // Determines the availablity of a domain
 namespace OpenSRSLib
 {
-    public class Register : Request
+    public class Register<T> : Request<T>
     {
         protected string domain;
         protected ContactSet owner;       // required

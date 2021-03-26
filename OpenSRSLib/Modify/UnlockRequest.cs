@@ -2,8 +2,12 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class UnlockRequest : Modify
+    public class UnlockRequest : Modify<Response>
     {
+        /// <summary>
+        /// Unlocks specified domain
+        /// </summary>
+        /// <param name="domain"></param>
         public UnlockRequest(string domain){
             this.domain = domain;
             xml = BuildXML();

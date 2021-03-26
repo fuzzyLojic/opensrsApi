@@ -19,7 +19,7 @@ namespace OpenSRSLib
                 return;
             }
             else{
-                Request.ErrorHandling("Invalid IP address", 13);
+                Request<bool>.ErrorHandling("Invalid IP address", 13);
             }
         }
     }

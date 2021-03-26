@@ -4,10 +4,14 @@ using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class AuthCodeRequest : Request
+    public class AuthCodeRequest : Request<Response>
     {
         private string domain;
 
+        /// <summary>
+        /// Sends email to Account Owner with Transfer Authorization code (EPP)
+        /// </summary>
+        /// <param name="domain"></param>
         public AuthCodeRequest(string domain){
             this.domain = domain;
             xml = BuildXML();

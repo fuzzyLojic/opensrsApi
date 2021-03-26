@@ -1,20 +1,24 @@
+using System;
 using System.Collections.Generic;
 
 namespace OpenSRSLib
 {
-    public class SetDnsRequest : DnsZone
+    public class SetDnsRequest : Request<SetDnsResponse>
     {
         private string action;
 
-        public SetDnsRequest(string domain, List<ARecord> aRecords, List<AAAARecord> aaaaRecords, List<CNameRecord> cNames, List<MXRecord> mxRecords, List<TXTRecord> txtRecords, List<SRVRecord> srvRecords)
+        private string domain;
+        private DnsZone records;
+
+        /// <summary>
+        /// Set a DNS Zone file
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="records"></param>
+        public SetDnsRequest(string domain, DnsZone records)
         {
             this.domain = domain;
-            this.aRecords = aRecords;
-            this.aaaaRecords = aaaaRecords;
-            this.cNames = cNames;
-            this.mxRecords = mxRecords;
-            this.txtRecords = txtRecords;
-            this.srvRecords = srvRecords;
+            this.records = records;
             CheckNew();
             xml = BuildXML();
         }
@@ -32,28 +36,30 @@ namespace OpenSRSLib
 
             Dictionary<string, List<DnsRecord>> temp = new Dictionary<string, List<DnsRecord>>();
             
-            if(aRecords != null){
-                temp.Add("A", aRecords.ConvertAll(x => (DnsRecord)x));
+
+
+            if(records.A != null){
+                temp.Add("A", records.A.ConvertAll(x => (DnsRecord)x));
             }
 
-            if(aaaaRecords != null){
-                temp.Add("AAAA", aaaaRecords.ConvertAll(x => (DnsRecord)x));
+            if(records.AAAA != null){
+                temp.Add("AAAA", records.AAAA.ConvertAll(x => (DnsRecord)x));
             }
 
-            if(cNames != null){
-                temp.Add("CNAME", cNames.ConvertAll(x => (DnsRecord)x));
+            if(records.CName != null){
+                temp.Add("CNAME", records.CName.ConvertAll(x => (DnsRecord)x));
             }
 
-            if(mxRecords != null){
-                temp.Add("MX", mxRecords.ConvertAll(x => (DnsRecord)x));
+            if(records.MX != null){
+                temp.Add("MX", records.MX.ConvertAll(x => (DnsRecord)x));
             }
 
-            if(txtRecords != null){
-                temp.Add("TXT", txtRecords.ConvertAll(x => (DnsRecord)x));
+            if(records.TXT != null){
+                temp.Add("TXT", records.TXT.ConvertAll(x => (DnsRecord)x));
             }
 
-            if(srvRecords != null){
-                temp.Add("SRV", srvRecords.ConvertAll(x => (DnsRecord)x));
+            if(records.SRV != null){
+                temp.Add("SRV", records.SRV.ConvertAll(x => (DnsRecord)x));
             }
 
             Dictionary<string, string> recordTypes = new Dictionary<string, string>();
@@ -74,7 +80,6 @@ namespace OpenSRSLib
         }
 
 
-
         private void AddRecordTypeList(XmlDoc doc, string type, List<DnsRecord> records){
             Dictionary<string, string> recordsType = new Dictionary<string, string>();
             for(int i = 0; i < records.Count; i++){
@@ -93,8 +98,8 @@ namespace OpenSRSLib
         // if it is valid, we set it with the new values
         private void CheckNew(){
             GetDnsRequest req = new GetDnsRequest(domain);
-            req.Post();
-            action = req.IsValid ? "set_dns_zone" : "create_dns_zone";
+            action = req.Post().IsValid ? "set_dns_zone" : "create_dns_zone";
+            return;
         }
     }
 }

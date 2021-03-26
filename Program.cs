@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
-using System.Text.Json;
-using OpenSRSLib;                   // needed to change encoding for StringWriter from utf-16
+using System.Text.Json; 
 using System.Net.Http;
 using System.Threading.Tasks;
+using OpenSRSLib;
+using OpenSRSSql;
+using System.Data.SqlClient;
+
 
 namespace opensrsApi
 {
@@ -12,47 +14,51 @@ namespace opensrsApi
     {
         static void Main(string[] args)
         {
-            // Request.isInTestMode = true;
-
+            ApiSettings.IsInTestMode = true;
+            
             /*** Begin Lookup Availabilty Of Domain ***/
             // LookupRequest req = new LookupRequest("hoobajab.com");
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
-
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"status: {res.Status}\nreason: {res.Reason}");
+            // Console.WriteLine($"hasclaim: {res.HasClaim}");
+            // Console.WriteLine($"email available: {res.EmailAvailable}\nno service: {res.NoService}\nprice status: {res.PriceStatus}");
 
             /*** ex: run async ***/
-            // Task task = req.PostAsync();
+            // LookupRequest req = new LookupRequest("hoobajab.com");
             // int i = 0;
-            // while(req.Response == null){
-            //     i++;
+            // using (HttpClient client = new HttpClient()){
+            //     Task task = req.PostAsync(client);
+            //     while(req.Response == null){
+            //         i++;
+            //     }
             // }
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"success: {req.Response.Success}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"status: {req.Response.Status}\nreason: {req.Response.Reason}");
+            // Console.WriteLine($"hasclaim: {req.Response.HasClaim}");
+            // Console.WriteLine($"email available: {req.Response.EmailAvailable}\nno service: {req.Response.NoService}\nprice status: {req.Response.PriceStatus}");
             // Console.WriteLine($"i: {i}");
-
-            /*** ex: parse to XML ***/
-            // XDocument xDoc = req.Response.ToXDoc;
-            // Console.WriteLine("\n\nXML:");
-            // foreach (var item in xDoc.Descendants("item"))
-            // {
-            //     Console.WriteLine($"key: {item.Attribute("key").Value}  value: {item.Value}");
-            // }
-
-            /*** ex: parse to JSON ***/
-            // string json = req.Response.ToJson;
-            // Console.WriteLine(json);
-            // JsonDocument jsonDoc = JsonDocument.Parse(json);
-            // Console.WriteLine($"\n\nJson:\nis_success: {jsonDoc.RootElement.GetProperty("is_success").GetString()}");
 
             /*** End Lookup Availabilty Of Domain ***/
 
-
             /*** Begin Register a New Domain using Default Nameservers ***/
+            // string domain = "hoobajab12.com";
             // ContactSet owner = new ContactSet("Joe", "Shmoe", "Captain Shmoe's", "5555555555", "joe@smoe.com", "1234 Count St.", null, null, "Here", "OR", "99999");
             // ContactSet admin = new ContactSet("Dude", "Guy", "IT Dude", "4444444444", "dude@guy.com", "2357 Prime Way", null, null, "There", "OR", "99999");
 
-            // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("hoobajab7.com", 1, owner, admin, admin, admin);
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest(domain, 1, owner, admin, admin, admin);
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"admin email: {res.AdminEmail}\nasync reason: {res.AyncReason}\nerror: {res.Error}");
+            // if(res.CancelledOrders != null){
+            //     foreach (var item in res.CancelledOrders)
+            //     {
+            //         Console.WriteLine($"cancel: {item}");
+            //     }
+            // }
+            // Console.WriteLine($"forced pending: {res.ForcedPending}\nId: {res.Id}\nqueue request id: {res.QueueRequestId}");
+            // Console.WriteLine($"registration code: {res.RegistrationCode}\nregistration text: {res.RegistrationText}");
+            // Console.WriteLine($"transfer id: {res.TransferId}\nwhois privacy state: {res.WhoisPrivacyState}");
             // /*** End Register a New Domain using Default Nameservers ***/
 
             /*** Begin Register a New Domain using Custom Nameservers ***/
@@ -62,8 +68,8 @@ namespace opensrsApi
 
             // RegisterNewDefaultRequest req = new RegisterNewDefaultRequest("geeblgorp.com", 1, owner, admin, admin, admin, ns);
 
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Register a New Domain using Custom Nameservers ***/
 
 
@@ -74,177 +80,191 @@ namespace opensrsApi
 
             // RegisterTransferDefaultRequest req = new RegisterTransferDefaultRequest("hoobajab2.com", "5H+q<:4L5~2L", 1, owner, admin, admin, admin, ns);
 
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Register a New Domain using Custom Nameservers ***/
 
             /*** Begin Get DNS records ***/
             // GetDnsRequest req = new GetDnsRequest("hoobajab.com");
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis valid: {req.IsValid}\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"status: {res.NameserversOk}");
+            // if(res.Records != null){
+            //     if (res.Records.A != null)
+            //     {
+            //         foreach (var item in res.Records.A)
+            //         {
+            //             Console.WriteLine($"A: {item.IpAddress}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.AAAA != null)
+            //     {
+            //         foreach (var item in res.Records.AAAA)
+            //         {
+            //             Console.WriteLine($"A: {item.IpAddress}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.CName != null)
+            //     {
+            //         foreach (var item in res.Records.CName)
+            //         {
+            //             Console.WriteLine($"CName: {item.HostName}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.MX != null)
+            //     {
+            //         foreach (var item in res.Records.MX)
+            //         {
+            //             Console.WriteLine($"MX: {item.HostName}, {item.Priority}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.TXT != null)
+            //     {
+            //         foreach (var item in res.Records.TXT)
+            //         {
+            //             Console.WriteLine($"TXT: {item.Text}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.SRV != null)
+            //     {
+            //         foreach (var item in res.Records.SRV)
+            //         {
+            //             Console.WriteLine($"SRV: {item.HostName}, {item.Priority}, {item.Weight}, {item.Port}, {item.SubDomain}");
+            //         }
+            //     }
+            // }
+
             /*** End Get DNS records ***/
 
-            /*** Begin Set DNS A record***/
+            /*** Begin Set DNS records ***/
+            // string domain = "hoobajab.com";
             // List<ARecord> aList = new List<ARecord>(){
-            //     new ARecord("123.45.6.214")
+            //     new ARecord("120.45.6.214"),
+            //     new ARecord("111.222.123.213", "ftp")
             // };
-            // SetDnsRequest req = new SetDnsRequest("hoobajab5.com", aList, null, null, null, null, null);
 
-            // Console.WriteLine(req.XML);
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
-            // Console.WriteLine(req.Response.ToJson());
-            /*** Begin Set DNS A record ***/
+            // List<MXRecord> mxList = new List<MXRecord>(){
+            //     new MXRecord("mx1.flerb.com", 1),
+            //     new MXRecord("mx2.flerb.com", "5", "mail")
+            // };
+
+            // List<CNameRecord> cnameList = new List<CNameRecord>(){
+            //     new CNameRecord(domain, "www")
+            // };
+
+            // List<TXTRecord> txtList = new List<TXTRecord>(){
+            //     new TXTRecord("goggle-98q734nv590873459087243v958y24"),
+            //     new TXTRecord("gergle-9847cb098743c0918374c509817d3j09187dj90823740978", "geep")
+            // };
+
+            // List<SRVRecord> srvList = new List<SRVRecord>(){
+            //     new SRVRecord("gribble.org", 1, 10, 4000, "blarp")
+            // };
+
+            // DnsZone records = new DnsZone();
+            // records.A = aList;
+            // records.MX = mxList;
+            // records.CName = cnameList;
+            // records.TXT = txtList;
+            // records.SRV = srvList;
+
+            // SetDnsRequest req = new SetDnsRequest(domain, records);
+
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // Console.WriteLine($"status: {res.NameserversOk}");
+            // if(res.Records != null){
+            //     if (res.Records.A != null)
+            //     {
+            //         foreach (var item in res.Records.A)
+            //         {
+            //             Console.WriteLine($"A: {item.IpAddress}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.AAAA != null)
+            //     {
+            //         foreach (var item in res.Records.AAAA)
+            //         {
+            //             Console.WriteLine($"A: {item.IpAddress}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.CName != null)
+            //     {
+            //         foreach (var item in res.Records.CName)
+            //         {
+            //             Console.WriteLine($"CName: {item.HostName}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.MX != null)
+            //     {
+            //         foreach (var item in res.Records.MX)
+            //         {
+            //             Console.WriteLine($"MX: {item.HostName}, {item.Priority}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.TXT != null)
+            //     {
+            //         foreach (var item in res.Records.TXT)
+            //         {
+            //             Console.WriteLine($"TXT: {item.Text}, {item.SubDomain}");
+            //         }
+            //     }
+            //     if (res.Records.SRV != null)
+            //     {
+            //         foreach (var item in res.Records.SRV)
+            //         {
+            //             Console.WriteLine($"SRV: {item.HostName}, {item.Priority}, {item.Weight}, {item.Port}, {item.SubDomain}");
+            //         }
+            //     }
+            // }
+            /*** Begin Set DNS records ***/
 
             /*** Begin Set DNS MX record***/
             // List<MXRecord> mxList = new List<MXRecord>(){
             //     new MXRecord("mx4.moop.com", 5, "www"),
-            //     new MXRecord("mx5.moop.com", 10, "www")
+            //     new MXRecord("mx5.moop.com", 10)
             // };
-            // SetDnsRequest req = new SetDnsRequest("hoobajab2.com", null, null, null, mxList, null, null);
-
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // SetDnsRequest req = new SetDnsRequest("hoobajab.com", null, null, null, mxList, null, null);
+            // Console.WriteLine(req.XML);
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** Begin Set DNS MX record ***/
 
             /*** Begin Get All Info ***/
             // GetAllInfoRequest req = new GetAllInfoRequest("hoobajab.com");
-            // req.Post();
-            // Console.WriteLine($"isValid: {req.IsValid}");
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // if(res.Success){
+            //     Console.WriteLine($"AutoRenew: {res.AutoRenew}\nRegistryCreateDate: {res.RegistryCreateDate}");
+            //     Console.WriteLine($"RegistryExpireDate: {res.RegistryExpireDate}\nRegistryUpdateDate: {res.RegistryUpdateDate}");
+            //     Console.WriteLine($"AffiliateId: {res.AffiliateId}\nSponsoringRsp: {res.SponsoringRsp}");
+            //     Console.WriteLine($"ExpireDate: {res.ExpireDate}\nLetExpire: {res.LetExpire}");
+            //     foreach (var item in res.ContactSet)
+            //     {
+            //         Console.WriteLine($"contact: {item.Key}");
+            //         Console.WriteLine($"first name: {item.Value.FirstName}");
+            //     }
+            //     foreach (var item in res.NameserverList)
+            //     {
+            //         Console.WriteLine($"ns: {item.Name}");
+            //     }
+            // }
 
-            // string json = req.Response.ToJson;
-            // Console.WriteLine(json);
             /*** End Get All Info ***/
 
             /*** Begin Get Transfer Code ***/
             // AuthCodeRequest req = new AuthCodeRequest("hoobajab7.com");
-            // req.Post();
-            // Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Get Transfer Code ***/
 
             /*** Begin Unlock Domain ***/
-            UnlockRequest req = new UnlockRequest("hoobajab7.com");
-            req.Post();
-            Console.WriteLine($"response string:\n{req.Response.ToString}\n\nis success: {req.Response.IsSuccess}\nresponse code: {req.Response.ResponseCode}\nresponse text: {req.Response.ResponseText}");
+            // UnlockRequest req = new UnlockRequest("hoobajab7.com");
+            // var res = req.Post();
+            // Console.WriteLine($"success: {res.Success}\nresponse code: {res.ResponseCode}\nresponse text: {req.Response.ResponseText}");
             /*** End Unlock Domain ***/
 
 
-            /*** Begin JSON Test ***/
-            //             string json = @"<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
-            // <!DOCTYPE OPS_envelope SYSTEM 'ops.dtd'>
-            // <OPS_envelope>
-            //  <header>
-            //   <version>0.9</version>
-            //   </header>
-            //  <body>
-            //   <data_block>
-            //    <dt_assoc>
-            //     <item key='protocol'>XCP</item>
-            //     <item key='object'>DOMAIN</item>
-            //     <item key='action'>SW_REGISTER</item>
-            //     <item key='attributes'>
-            //      <dt_assoc>
-            //       <item key='f_parkp'>Y</item>
-            //       <item key='affiliate_id'></item>
-            //       <item key='auto_renew'></item>
-            //       <item key='comments'>Sample comment</item>
-            //       <item key='domain'>example2rwetw42tt4t.com</item>
-            //       <item key='reg_type'>new</item>
-            //       <item key='reg_username'>daniel</item>
-            //       <item key='reg_password'>adf3wyt444fvfc3</item>
-            //       <item key='f_whois_privacy'>1</item>
-            //       <item key='period'>1</item>
-            //       <item key='link_domains'>0</item>
-            //       <item key='custom_nameservers'>1</item>
-            //       <item key='f_lock_domain'>1</item>
-            //       <item key='reg_domain'></item>
-            //       <item key='contact_set'>
-            //        <dt_assoc>
-            //         <item key='admin'>
-            //          <dt_assoc>
-            //           <item key='country'>US</item>
-            //           <item key='address3'>Admin</item>
-            //           <item key='org_name'>Example Inc.</item>
-            //           <item key='phone'>+1.4165550123x1812</item>
-            //           <item key='state'>CA</item>
-            //           <item key='address2'>Suite 100</item>
-            //           <item key='last_name'>Adams</item>
-            //           <item key='email'>adams@example.com</item>
-            //           <item key='city'>Santa Clara</item>
-            //           <item key='postal_code'>90210</item>
-            //           <item key='fax'>+1.4165550125</item>
-            //           <item key='address1'>32 Oak Street</item>
-            //           <item key='first_name'>Adler</item>
-            //          </dt_assoc>
-            //         </item>
-            //         <item key='owner'>
-            //          <dt_assoc>
-            //           <item key='country'>US</item>
-            //           <item key='address3'>Owner</item>
-            //           <item key='org_name'>Example Inc.</item>
-            //           <item key='phone'>+1.4165550123x1902</item>
-            //           <item key='state'>CA</item>
-            //           <item key='address2'>Suite 500</item>
-            //           <item key='last_name'>Ottway</item>
-            //           <item key='email'>ottway@example.com</item>
-            //           <item key='city'>SomeCity</item>
-            //           <item key='postal_code'>90210</item>
-            //           <item key='fax'>+1.4165550124</item>
-            //           <item key='address1'>32 Oak Street</item>
-            //           <item key='first_name'>Owen</item>
-            //          </dt_assoc>
-            //         </item>
-            //         <item key='billing'>
-            //          <dt_assoc>
-            //           <item key='country'>US</item>
-            //           <item key='address3'>Billing</item>
-            //           <item key='org_name'>Example Inc.</item>
-            //           <item key='phone'>+1.4165550123x1248</item>
-            //           <item key='state'>CA</item>
-            //           <item key='address2'>Suite 200</item>
-            //           <item key='last_name'>Burton</item>
-            //           <item key='email'>burton@example.com</item>
-            //           <item key='city'>Santa Clara</item>
-            //           <item key='postal_code'>90210</item>
-            //           <item key='fax'>+1.4165550136</item>
-            //           <item key='address1'>32 Oak Street</item>
-            //           <item key='first_name'>Bill</item>
-            //          </dt_assoc>
-            //         </item>
-            //        </dt_assoc>
-            //       </item>
-            //       <item key='nameserver_list'>
-            //        <dt_array>
-            //         <item key='0'>
-            //          <dt_assoc>
-            //           <item key='name'>ns1.systemdns.com</item>
-            //           <item key='sortorder'>1</item>
-            //          </dt_assoc>
-            //         </item>
-            //         <item key='1'>
-            //          <dt_assoc>
-            //           <item key='name'>ns2.systemdns.com</item>
-            //           <item key='sortorder'>2</item>
-            //          </dt_assoc>
-            //         </item>
-            //        </dt_array>
-            //       </item>
-            //       <item key='encoding_type'></item>
-            //       <item key='custom_tech_contact'>0</item>
-            //      </dt_assoc>
-            //     </item>
-            //     <item key='registrant_ip'>10.0.10.19</item>
-            //    </dt_assoc>
-            //   </data_block>
-            //  </body>
-            // </OPS_envelope>";
-            //             json = XmlDoc.ToJson(json);
-            //             Console.WriteLine(json);
-            //             JsonDocument jsonDoc = JsonDocument.Parse(json);
-            //             Console.WriteLine($"\n\nJson:\nadmin address1: {jsonDoc.RootElement[0].GetProperty("attributes").GetProperty("contact_set").GetProperty("admin").GetProperty("address1").GetString()}");
-
-            /*** End JSON Test ***/
         }   
     }
 }

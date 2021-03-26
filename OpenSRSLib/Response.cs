@@ -1,61 +1,58 @@
-using System.Xml.Linq;
+using System;
+using System.Text.Json;
 
 namespace OpenSRSLib
 {
     public class Response
     {
-        protected string responseString;
-        protected bool isSuccess;
-        protected int responseCode;
-        protected string responseText;
+        public string JsonResponse { get; set; }
+        public string IsSuccess { get; set; }
+        public string ResponseCode { get; set; }
+        public string ResponseText { get; set; }
 
-        public new string ToString { 
-            get
+        public JsonElement Attributes { get; set; }
+
+        public bool Success { 
+            get 
             {
-                return responseString;
-            }
+                if (Int32.Parse(IsSuccess) == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                };
+            } 
+            set {} 
         }
 
-        public bool IsSuccess { 
-            get
-            {
-                return isSuccess;
-            }
+        /// <summary>
+        /// Process request specific response properties
+        /// Override in derived classes
+        /// </summary>
+        public virtual void Process(string json){
+            this.JsonResponse = json;
+            if(!Success){ return; }
+
+            return;
         }
 
-        public int ResponseCode { 
-            get
+        /// <summary>
+        /// Checks if value for property exists. Assigns value if true
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="Callback">Action should look like: value => this.Property = value
+        /// or similar</param>
+        protected void CheckAttributePropValue(string key, Action<string> Callback)
+        {
+            JsonElement temp;
+            Attributes.TryGetProperty(key, out temp);
+            if (temp.ValueKind != JsonValueKind.Undefined)
             {
-                return responseCode;
+                Callback(temp.ToString());
             }
-        }
-
-        public string ResponseText { 
-            get
-            {
-                return responseText;
-            }
-        }
-
-        public string ToJson { 
-            get
-            {
-                return XmlDoc.ToJson(responseString);
-            }
-        }
-
-        public XDocument ToXDoc {
-            get
-            {
-                return XDocument.Parse(responseString);
-            }
-        }
-
-        public Response(string responseString, bool isSuccess, int responseCode, string responseText){
-            this.responseString = responseString;
-            this.isSuccess = isSuccess;
-            this.responseCode = responseCode;
-            this.responseText = responseText;
+            
         }
     }
 }

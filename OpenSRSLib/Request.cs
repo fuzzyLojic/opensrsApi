@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using System.Xml.Linq;              // just to return an XDocument from Post
 using System.Text.Json;             // for connection information
 using System.IO;                    // for connection information
 using System.Linq;
@@ -9,37 +8,38 @@ using System.Security.Cryptography; // for MD5 encryption
 using System.Threading.Tasks;       // needed for Task object for PostAsync
 using System.Net.Http;
 using System.Net;
+using System.Reflection;
 
 
 namespace OpenSRSLib
 {
-    public class Request
+    public abstract class Request<T>
     {
-        public static bool isInTestMode = true;
+        protected static bool isInTestMode = ApiSettings.IsInTestMode;
         protected static Connection connectionDetails = GetConnectionDetails();
         protected string xml;
-        protected Response response;
+        protected T response;
 
-        // review xml request doc before Posting
+        /// <summary>
+        /// review xml request doc before Posting
+        /// </summary>
+        /// <value></value>
         public string XML { 
-            get
-            { 
-                return xml;
-            }
+            get => xml;
         }
 
-        public Response Response { 
-            get
-            {
-                return response;
-            }
+        /// <summary>
+        /// Response object. Type dependant on Request class
+        /// </summary>
+        /// <value></value>
+        public T Response { 
+            get => response;
+            set{}
         }
 
         // OpenSRS API IS CASE SENSITIVE FOR THE HASH AUTHENTICATION!!
         protected string Signature {
-            get {
-                return MD5Hash(MD5Hash(this.xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
-            }
+            get => MD5Hash(MD5Hash(this.xml + connectionDetails.ApiKey).ToLower() + connectionDetails.ApiKey).ToLower();
         }
 
         // XML document is assemebled differently depending on type of request
@@ -64,44 +64,66 @@ namespace OpenSRSLib
 
         // used to process Post results further before returning
         protected virtual void Preprocessing(string results){
-            response = XmlDoc.CreateResponse(results);
+            string json = XmlDoc.ToJson(results);
+            response = JsonSerializer.Deserialize<T>(json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+            // use reflection to find Process method of Response and derived    
+            MethodInfo res = typeof(T).GetMethod("Process");
+            object[] args = { json };
+            res.Invoke(response, args);
             return;
         }
 
-        // Post of Request object: does not block
-        public async Task PostAsync()
+        /// <summary>
+        /// Post of Request object: does not block
+        /// </summary>
+        /// <param name="client">HttpClient</param>
+        /// <returns>Task object with Response property</returns>
+        public async Task PostAsync(HttpClient client)
         {        
             string results;
+            StringContent content = new StringContent(this.xml);
+            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml");
+            content.Headers.Add("X-Username", connectionDetails.ResellerUsername);
+            content.Headers.Add("X-Signature", this.Signature);
+            content.Headers.ContentLength = this.xml.Length;
+
             try
             {
-                HttpClient client = new HttpClient();
-                StringContent content = new StringContent(this.xml);
-                content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml");
-                content.Headers.Add("X-Username", connectionDetails.ResellerUsername);
-                content.Headers.Add("X-Signature", this.Signature);
-                content.Headers.ContentLength = this.xml.Length;
-
                 HttpResponseMessage response = await client.PostAsync(connectionDetails.ApiHostPort, content);
                 results = await response.Content.ReadAsStringAsync();
-
-                client.Dispose();
             }
             catch (Exception e)
             {
-                ErrorHandling("Oops! Post broke...\nIs your IP whitelisted in live mode?" + e, 5);
+                ErrorHandling("Oops! Post broke...\nIs your IP whitelisted in live mode?\n" + e, 5);
                 results = "";
             }
 
             Preprocessing(results);  // use results before returning to requestor
-            // return this.Response;
+            
             return;
         }
 
-        // Post of Request object: does block
-        public void Post(){
-            PostAsync().Wait();
-            return;
-            // return this.Response;
+        /// <summary>
+        /// Post of Request object: does block
+        /// </summary>
+        /// <returns>Response class or derived. Dependant on Request type</returns>
+        public T Post(){            
+            try
+            {
+                HttpClient client = new HttpClient();
+                PostAsync(client).Wait();
+                client.Dispose();
+            }
+            catch (Exception e)
+            {
+                ErrorHandling("Trouble establishing HttpClient?\n" + e, 5);
+            }
+            
+            return this.Response;
         }   
 
         // get reseller username, api host port, and api key from connection.json
@@ -146,7 +168,7 @@ namespace OpenSRSLib
                     return "";
                 }
             }
-            else{
+            else{   /****** TODO: needs testing ******/
                 IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 ipRequest = ipAddress.ToString();
@@ -155,6 +177,10 @@ namespace OpenSRSLib
             return ipRequest.Replace("\n", "").Replace("\r", "");
         }
 
+        /// <summary>
+        /// Get outward facing IP address. Used in some requests.
+        /// </summary>
+        /// <returns>IP address string</returns>
         public string GetIp(){
             Task<string> ip = GetPublicIP();
             return ip.Result.ToString();
