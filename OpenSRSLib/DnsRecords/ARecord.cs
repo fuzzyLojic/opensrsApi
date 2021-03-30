@@ -4,9 +4,6 @@ namespace OpenSRSLib
 {
     public class ARecord : DnsRecord
     {
-        public string IpAddress { get; set; }
-        public string SubDomain { get; set; }
-
         /// <summary>
         /// A record. Must be IPv4
         /// </summary>
@@ -14,6 +11,7 @@ namespace OpenSRSLib
         /// <param name="subdomain">can be left out</param>
         public ARecord(string ipAddress, string subdomain = ""){
             ValidateIP(ipAddress);
+            this.Type = "A";
             this.IpAddress = ipAddress;
             this.SubDomain = subdomain;
 

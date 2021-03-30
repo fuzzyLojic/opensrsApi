@@ -6,11 +6,6 @@ namespace OpenSRSLib
 {
     public class MXRecord : DnsRecord
     {
-
-        public string HostName { get; set; }
-        public string Priority { get; set; }
-        public string SubDomain { get; set; }
-
         /// <summary>
         /// MX Record.
         /// </summary>
@@ -18,6 +13,11 @@ namespace OpenSRSLib
         /// <param name="priority"></param>
         /// <param name="subdomain">can be left out</param>
         public MXRecord(string hostname, ushort priority, string subdomain = ""){
+            this.Type = "MX";
+            this.HostName = hostname;
+            this.Priority = priority.ToString();
+            this.SubDomain = subdomain;
+
             record = new Dictionary<string, string>(){
                 {"hostname", hostname},
                 {"priority", priority.ToString()},
@@ -27,13 +27,14 @@ namespace OpenSRSLib
 
         [JsonConstructor]
         public MXRecord(string hostname, string priority, string subdomain = ""){
+            this.Type = "MX";
             this.HostName = hostname;
             this.Priority = priority;
             this.SubDomain = subdomain;
             
             record = new Dictionary<string, string>(){
                 {"hostname", hostname},
-                {"priority", priority.ToString()},
+                {"priority", priority},
                 {"subdomain", subdomain}
             };
         }
